@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Raine</string>
+    <string name="login_url">http://cello.jamwide.com/webserv/api/login</string>
 </resources>
