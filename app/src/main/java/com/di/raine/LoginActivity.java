@@ -15,6 +15,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.di.raine.services.LoginService;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -62,7 +64,8 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new LoginTask().execute();
+//                new LoginTask().execute();
+                LoginService.attemptLogin(getApplicationContext());
 
             }
         });
