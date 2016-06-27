@@ -9,7 +9,7 @@ public class LoginServiceTest {
 
     @Test
     public static void testAttemptLogin() {
-
+        //No app context
 
     }
 }

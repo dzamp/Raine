@@ -15,7 +15,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.di.raine.services.LoginService;
+import com.di.raine.services.user.LoginService;
+import com.di.raine.services.user.LogoutService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -64,8 +65,8 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                new LoginTask().execute();
-                LoginService.attemptLogin(getApplicationContext());
+                //
+                new LoginService().attemptLogin(getApplicationContext());
 
             }
         });
@@ -79,7 +80,11 @@ public class LoginActivity extends AppCompatActivity {
         return new String(buffer);
     }
 
-
+    @Override
+    protected void onStop() {
+        new LogoutService().attemptLogout(getApplicationContext());
+        super.onStop();
+    }
 
     protected void checkInternetConnectivity() {
         ConnectivityManager connMgr = (ConnectivityManager)
@@ -95,7 +100,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-
+// To be removed
     private class  LoginTask extends AsyncTask<Void, String, String> {
 
         protected String loginUrl = (String) getString(R.string.login_url);
