@@ -1,43 +1,63 @@
 package com.di.raine.services.user;
 
-import android.content.Context;
-import android.util.Base64;
-import android.util.Log;
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by jim on 27/6/2016.
- */
+
 public class LoginService {
 
     private static final String url = "https://httpbin.org/get";
     private static final String loginUrl = "http://cello.jamwide.com/webserv/api/login";
+    private String username;
+    private String password;
+    private SuccessListener successListener = new SuccessListener();
+    private ErrorListener errorListener = new ErrorListener();
 
-    private class LoginListener implements Response.Listener<String> {
+    public String getResponse() { return successListener.returnResponse(); }
+
+    public VolleyError getError() { return errorListener.getErrorMessage(); }
+
+    public StringRequest attemptLogin(String username, String password) {
+        this.username = username;
+        this.password = password;
+        return new LoginRequest(Request.Method.POST,
+                loginUrl, successListener, errorListener);
+    }
+
+    public static class SuccessListener implements Response.Listener<String> {
+        private String response;
+
+        public String returnResponse() {
+            return this.response;
+        }
+
         @Override
         public void onResponse(String response) {
+            //TODO better handling
+            this.response = response;
             System.out.println(response);
         }
     }
 
-    private class LoginResponseListener implements Response.ErrorListener {
+    public static class ErrorListener implements Response.ErrorListener {
+        private VolleyError error;
+
+        public VolleyError getErrorMessage() {
+            return error;
+        }
+
         @Override
         public void onErrorResponse(VolleyError error) {
+            this.error = error;
+            //TODO better handling
             System.out.println("attemptLogin didn't work");
+            System.out.println(error.networkResponse.headers);
         }
     }
 
@@ -51,7 +71,6 @@ public class LoginService {
         @Override
         public Map<String, String> getHeaders() throws AuthFailureError {
             Map<String, String> pars = new HashMap<String, String>();
-            System.out.println("on getHeaders()");
             pars.put("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
             pars.put("Accept", "application/xhtml+xml");
             pars.put("Accept", "application/json");
@@ -60,24 +79,21 @@ public class LoginService {
 
         @Override
         protected Map<String, String> getParams() throws AuthFailureError {
-            System.out.println("on getParams()");
             Map<String, String> params = new HashMap<String, String>();
-            params.put("username", "dimitris");
-            params.put("password", "123456");
+            params.put("username", username);
+            params.put("password", password);
             return params;
         }
     }
 
-    public void attemptLogin(Context appContext) {
-        LoginListener listener = new LoginListener();
-        LoginResponseListener loginResponseListener = new LoginResponseListener();
-        RequestQueue queue = Volley.newRequestQueue(appContext);
-        StringRequest jsonObjReq = new LoginRequest(Request.Method.POST,
-                loginUrl, listener, loginResponseListener);
-        queue.add(jsonObjReq);
 
 
-    }
+
+
+
+
+
+
 //
 //    public static void sendGetRequest(Context appContext) {
 //
