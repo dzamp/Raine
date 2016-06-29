@@ -1,21 +1,16 @@
 package com.di.raine.services.user;
 
-import android.content.Context;
-
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 
 
 public class LogoutService {
 
     private static final String loginUrl = "http://cello.jamwide.com/webserv/api/logout";
-    private LoginService.SuccessListener successlistener = new LoginService.SuccessListener();
-    private LoginService.ErrorListener errorListener = new LoginService.ErrorListener();
-
+    private SuccessListener successlistener = new SuccessListener();
+    private ErrorListener errorListener = new ErrorListener();
     public String getReponse() { return successlistener.returnResponse(); }
 
     public VolleyError getError() { return errorListener.getErrorMessage(); }
@@ -32,5 +27,34 @@ public class LogoutService {
                 loginUrl, successlistener, errorListener);
     }
 
+    public  class SuccessListener implements Response.Listener<String> {
+        private String response;
 
+        public String returnResponse() {
+            return this.response;
+        }
+
+        @Override
+        public void onResponse(String response) {
+            //TODO better handling
+            this.response = response;
+            System.out.println(response);
+        }
+    }
+
+    public  class ErrorListener implements Response.ErrorListener {
+        private VolleyError error;
+
+        public VolleyError getErrorMessage() {
+            return error;
+        }
+
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            this.error = error;
+            //TODO better handling
+            System.out.println("attemptLogin didn't work");
+            System.out.println(error.networkResponse.headers);
+        }
+    }
 }
