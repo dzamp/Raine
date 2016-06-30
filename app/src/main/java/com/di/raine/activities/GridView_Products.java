@@ -8,16 +8,15 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.ContextMenu;
+import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import com.di.raine.R;
 import com.di.raine.services.NetworkService;
@@ -32,7 +31,9 @@ public class GridView_Products extends AppCompatActivity {
     private Menu menu;
     private ArrayList<Integer> productIds = new ArrayList<Integer>(
             Arrays.asList(R.mipmap.smart_phone, R.mipmap.pc,
-                    R.mipmap.monitors));
+                    R.mipmap.monitors, R.mipmap.smart_phone));
+    private ArrayList<String> productTexts = new ArrayList<>(
+            Arrays.asList("SmartPhones", "PC", "Monitors", "More stuff"));
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName className,
@@ -52,8 +53,8 @@ public class GridView_Products extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.gridview_products);
-        GridView gridview = (GridView) findViewById(R.id.gridview);
+        setContentView(R.layout.listview_products);
+        ListView gridview = (ListView) findViewById(R.id.listView);
         gridview.setAdapter(new ImageAdapter(this, productIds));
 
 
@@ -137,19 +138,29 @@ public class GridView_Products extends AppCompatActivity {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
 
-            ImageView imageView = (ImageView) convertView;
+
+            View grid;
+            LayoutInflater inflater = (LayoutInflater) mContext
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
             // if convertView's not recycled, initialize some attributes
-            if (imageView == null) {
-                imageView = new ImageView(mContext);
-                imageView.setLayoutParams(new GridView.LayoutParams(WIDTH, HEIGHT));
-                imageView.setPadding(PADDING, PADDING, PADDING, PADDING);
-                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            if (convertView == null) {
+//                imageView = new ImageView(mContext);
+//                imageView.setLayoutParams(new GridView.LayoutParams(WIDTH, HEIGHT));
+//                imageView.setPadding(PADDING, PADDING, PADDING, PADDING);
+//                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                grid = new View(mContext);
+                grid = inflater.inflate(R.layout.image_and_text, null);
+                TextView textView = (TextView) grid.findViewById(R.id.grid_image_text);
+                ImageView imageView = (ImageView) grid.findViewById(R.id.image_grid);
+                textView.setText(productTexts.get(position));
+                imageView.setImageResource(mThumbIds.get(position));
+            } else {
+                grid = (View) convertView;
             }
-
-            imageView.setImageResource(mThumbIds.get(position));
-            return imageView;
+            return grid;
         }
     }
+
 
 }
