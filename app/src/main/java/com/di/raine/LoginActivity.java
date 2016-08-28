@@ -24,6 +24,8 @@ import com.android.volley.VolleyError;
 import com.di.raine.activities.GridView_Products;
 import com.di.raine.services.NetworkService;
 
+import org.json.JSONArray;
+
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private NetworkService networkService;
@@ -35,6 +37,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private final static String PASSWORD = "password";
     private final static String LOGGED_IN = "loggedIn";
     private ProgressBar bar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,12 +89,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
 
-
-
     @Override
     protected void onStart() {
         super.onStart();
-
         // Bind to LocalService
         Intent intent = new Intent(this, NetworkService.class);
         startService(intent);

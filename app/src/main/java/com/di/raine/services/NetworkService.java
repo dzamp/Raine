@@ -1,6 +1,5 @@
 package com.di.raine.services;
 
-import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -10,14 +9,24 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.LruCache;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.di.raine.services.user.LoginService;
-import com.di.raine.services.user.LogoutService;
+import com.di.raine.services.auth.LoginService;
+import com.di.raine.services.auth.LogoutService;
+import com.google.gson.JsonObject;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class NetworkService extends Service {
     private final static String TAG = "NetworkService";
@@ -99,4 +108,62 @@ public class NetworkService extends Service {
         }
 
     }
+
+    public void requestCategories(Response.Listener<JSONArray> onSuccessListener, Response.ErrorListener onErrorListener) {
+        RequestCategories requestCategories = new RequestCategories("http://cello.jamwide.com/webserv/api/v0/category/list", onSuccessListener, onErrorListener);
+        getRequestQueue().add(requestCategories);
+    }
+
+
+    public final class RequestCategories extends JsonArrayRequest {
+
+        public RequestCategories(String url, Response.Listener<JSONArray> listener, Response.ErrorListener errorListener) {
+            super(url, listener, errorListener);
+        }
+
+
+        @Override
+        public Map<String, String> getHeaders() throws AuthFailureError {
+            Map<String, String> pars = new HashMap<String, String>();
+            pars.put("Accept", "application/xhtml+xml");
+            pars.put("Accept", "application/json");
+            return pars;
+        }
+
+
+    }
+    public void getCategory(int id,JSONObject request, Response.Listener<JSONObject> listener, Response.ErrorListener onErrorListener){
+        System.out.println(id);
+        GetCategory getCategory= new GetCategory(id,"http://cello.jamwide.com/webserv/api/v0/product/list?category="+id,request,
+                listener, onErrorListener);
+        getRequestQueue().add(getCategory);
+
+
+    }
+    public final class GetCategory extends JsonObjectRequest {
+        int id ;
+        private Map<String, String> mParams= new HashMap<>();
+
+        public GetCategory(int id, String url, JSONObject request, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+            super( Method.GET, url, request, listener, errorListener);
+            this.id = id;
+            mParams.put("category",Integer.toString(id));
+        }
+
+
+        @Override
+        public Map<String, String> getHeaders() throws AuthFailureError {
+            Map<String, String> pars = new HashMap<String, String>();
+            pars.put("Accept", "application/xhtml+xml");
+            pars.put("Accept", "application/json");
+            return pars;
+        }
+
+
+        @Override
+        public Map<String, String> getParams() {
+            return mParams;
+        }
+    }
+
 }
