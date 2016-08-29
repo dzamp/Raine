@@ -81,35 +81,25 @@ public class GridView_Products extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View v, final int position, long id) {
                 Snackbar.make(v, "clicked  item " + position, Snackbar.LENGTH_SHORT).show();
                 if (mBound) {
-                    networkService.getCategory(position + 1,new JSONObject(), new Response.Listener<JSONObject>() {
+                    networkService.getCategory(position + 1, new Response.Listener<String>() {
                         @Override
-                        public void onResponse(JSONObject response) {
-                            Gson son = new Gson();
-                           CelloResponse celloResponse = son.fromJson(response.toString(), CelloResponse.class);
-                            System.out.println(celloResponse.toString());
-                            if(position == 2){
-                               ArrayList<Laptop> laptops = (ArrayList)celloResponse.getData();
-                                Log.d("HASH",laptops.get(0).getDescription());
+                        public void onResponse(String response) {
+                            JSONArray obj = null;
+                            ArrayList<Product> products = new ArrayList<>();
+                            try {
+                                obj = (JSONArray) new JSONObject(response).get("data");
+                                String pType= "";
+                               Product productObj =  getProductAccordingtoPosition(position, pType);
+                                //start new Intent for new Activity
+                                Intent i = new Intent(getApplicationContext(), ProductsActivity.class);
+                                i.putExtra("products", obj.toString());
+                                i.putExtra("productType",  productObj.getClass().toString());
+                                startActivity(i);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-                        }
 
-//                        @Override
-//                        public void onResponse(String response) {
-////                            JSONArray obj = null;
-////                            ArrayList<Product> products = new ArrayList<>();
-////                            try {
-////                                obj = (JSONArray) new JSONObject(response).get("data");
-////                               Product productObj =  getProductAccordingtoPosition(position);
-////                                for (int i = 0; i < obj.length(); i++) {
-////                                    Gson son = new Gson();
-////                                    JSONObject json = obj.getJSONObject(i);
-////                                    products.add(son.fromJson(json.toString(), productObj.getClass()));
-////                                }
-////                            } catch (JSONException e) {
-////                                e.printStackTrace();
-////                            }
-////
-//                        }
+                        }
                     }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
@@ -123,23 +113,31 @@ public class GridView_Products extends AppCompatActivity {
 
     }
 
-    private Product getProductAccordingtoPosition(int position){
+
+
+    private Product getProductAccordingtoPosition(int position, String pType){
+        pType = "";
         Product productClass = null;
         switch (position) {
             case 0:
                 productClass = new HomeCinema();
+                pType = "HomeCinema";
                 break;
             case 1:
                 productClass = new Sound();
+                pType = "Sound";
                 break;
             case 2:
                 productClass = new Laptop();
+                pType = "Laptop";
                 break;
             case 3:
                 productClass = new Desktop();
+                pType = "Desktop";
                 break;
             case 4:
                 productClass = new Television();
+                pType = "Television";
                 break;
         }
         return productClass;
@@ -257,5 +255,24 @@ public class GridView_Products extends AppCompatActivity {
             return grid;
         }
     }
+
+
+
+    //                        @Override
+//                        public void onResponse(JSONObject response) {
+//                            Gson son = new Gson();
+//                            CelloResponse<Laptop> celloResponse = new CelloResponse<Laptop>();
+//                            CelloResponse<Laptop> celloRespons = son.fromJson(response.toString(), celloResponse.getClass());
+//                            System.out.println(celloResponse.toString());
+//                            CelloResponse<Laptop> lpts =  new CelloResponse<Laptop>();
+//                            ArrayList<Laptop> lList = new ArrayList<Laptop>();
+//                            lList.add(new Laptop("1","laptop", "good laptop"));
+//                            lpts.setData(lList);
+////                            if(position == 2){
+////                              ArrayList<Laptop> laptops = (ArrayList<Laptop>) celloRespons.getData();
+////                                System.out.println(laptops.get(0).getName());
+//////                                Log.d("HASH",laptops.get(0).getName());
+////                            }
+//                        }
 
 }

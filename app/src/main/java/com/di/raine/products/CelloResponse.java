@@ -1,14 +1,15 @@
 package com.di.raine.products;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by jim on 28/8/2016.
  */
 
-public class CelloResponse {
+public class CelloResponse<T> {
 
-    private List< ? extends Product> data;
+    private ArrayList<String> data;
     private int status;
     private String message;
     private String messageCode;
@@ -16,19 +17,20 @@ public class CelloResponse {
     public CelloResponse() {
     }
 
-    public CelloResponse(List<Product> data, int status, String message, String messageCode) {
+    public ArrayList<String> getData() {
+        return data;
+    }
+
+    public void setData(ArrayList<String> data) {
+        this.data = data;
+    }
+
+    public CelloResponse(ArrayList<String> data, int status, String message, String messageCode) {
+
         this.data = data;
         this.status = status;
         this.message = message;
         this.messageCode = messageCode;
-    }
-
-    public List<? extends Product> getData() {
-        return data;
-    }
-
-    public void setData(List<? extends Product> data) {
-        this.data = data;
     }
 
     public int getStatus() {

@@ -5,7 +5,7 @@ package com.di.raine.products;
  * Created by jim on 27/8/2016.
  */
 
-public class Sound extends Product {
+public class Sound implements Product {
     private String id;
     private String name;
     private String description;
@@ -29,7 +29,7 @@ public class Sound extends Product {
 
     @Override
     public String getName() {
-        return null;
+        return name;
     }
 
     @Override
@@ -39,11 +39,16 @@ public class Sound extends Product {
 
     @Override
     public String getId() {
-        return null;
+        return id;
     }
 
     @Override
     public void setId(String id) {
 
+    }
+
+    @Override
+    public String[] displayInfo() {
+        return new String[0];
     }
 }

@@ -4,7 +4,7 @@ package com.di.raine.products;
  * Created by jim on 27/8/2016.
  */
 
-public class HomeCinema extends Product {
+public class HomeCinema implements Product {
     private String id;
     private String name;
     private String description;
@@ -28,7 +28,7 @@ public class HomeCinema extends Product {
 
     @Override
     public String getName() {
-        return null;
+        return name;
     }
 
     @Override
@@ -38,11 +38,16 @@ public class HomeCinema extends Product {
 
     @Override
     public String getId() {
-        return null;
+        return id;
     }
 
     @Override
     public void setId(String id) {
 
+    }
+
+    @Override
+    public String[] displayInfo() {
+        return new String[0];
     }
 }

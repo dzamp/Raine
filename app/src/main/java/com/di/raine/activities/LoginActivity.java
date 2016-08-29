@@ -1,4 +1,4 @@
-package com.di.raine;
+package com.di.raine.activities;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -10,21 +10,16 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.di.raine.activities.GridView_Products;
+import com.di.raine.R;
 import com.di.raine.services.NetworkService;
-
-import org.json.JSONArray;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 

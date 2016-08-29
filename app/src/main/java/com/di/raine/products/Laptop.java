@@ -1,13 +1,19 @@
 package com.di.raine.products;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by jim on 27/8/2016.
  */
 
-public class Laptop extends Product{
+public class Laptop implements Product{
     private String id;
     private String name;
     private String description;
+
+
+
 
     public Laptop() {
     }
@@ -20,7 +26,7 @@ public class Laptop extends Product{
 
     @Override
     public String getName() {
-        return null;
+        return name;
     }
 
     @Override
@@ -30,12 +36,17 @@ public class Laptop extends Product{
 
     @Override
     public String getId() {
-        return null;
+        return id;
     }
 
     @Override
     public void setId(String id) {
 
+    }
+
+    @Override
+    public String[] displayInfo() {
+        return new String[]{"Name: "+this.getName(), "Description: "+ this.getDescription()};
     }
 
     public String getDescription() {
@@ -45,4 +56,6 @@ public class Laptop extends Product{
     public void setDescription(String description) {
         this.description = description;
     }
+
+
 }

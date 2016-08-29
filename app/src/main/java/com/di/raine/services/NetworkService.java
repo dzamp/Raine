@@ -132,20 +132,20 @@ public class NetworkService extends Service {
 
 
     }
-    public void getCategory(int id,JSONObject request, Response.Listener<JSONObject> listener, Response.ErrorListener onErrorListener){
+    public void getCategory(int id, Response.Listener<String> listener, Response.ErrorListener onErrorListener){
         System.out.println(id);
-        GetCategory getCategory= new GetCategory(id,"http://cello.jamwide.com/webserv/api/v0/product/list?category="+id,request,
+        GetCategory getCategory= new GetCategory("http://cello.jamwide.com/webserv/api/v0/product/list?category="+id,
                 listener, onErrorListener);
         getRequestQueue().add(getCategory);
 
 
     }
-    public final class GetCategory extends JsonObjectRequest {
+    public final class GetCategory extends StringRequest {
         int id ;
         private Map<String, String> mParams= new HashMap<>();
 
-        public GetCategory(int id, String url, JSONObject request, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
-            super( Method.GET, url, request, listener, errorListener);
+        public GetCategory( String url, Response.Listener<String> listener, Response.ErrorListener errorListener) {
+            super( url,  listener, errorListener);
             this.id = id;
             mParams.put("category",Integer.toString(id));
         }
