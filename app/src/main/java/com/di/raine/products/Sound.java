@@ -1,6 +1,8 @@
 package com.di.raine.products;
 
 
+import java.util.HashMap;
+
 /**
  * Created by jim on 27/8/2016.
  */
@@ -21,6 +23,15 @@ public class Sound implements Product {
 
     public String getDescription() {
         return description;
+    }
+
+    @Override
+    public HashMap<String, String> dataInfo() {
+        HashMap<String,String> info = new HashMap<>();
+        info.put("id",id);
+        info.put("name",name);
+        info.put("description",description);
+        return info;
     }
 
     public void setDescription(String description) {
@@ -47,8 +58,4 @@ public class Sound implements Product {
 
     }
 
-    @Override
-    public String[] displayInfo() {
-        return new String[0];
-    }
 }

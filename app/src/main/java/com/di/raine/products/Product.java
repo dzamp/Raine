@@ -3,12 +3,14 @@ package com.di.raine.products;
 import android.os.Parcelable;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 /**
  * Created by jim on 27/8/2016.
  */
 
 public interface  Product {
+
 //    private String name;
 //    private String id;
 ////    private String description;
@@ -35,14 +37,14 @@ public interface  Product {
     public void setId(String id);/* {
         this.id = id;
     }*/
-//
-//    public String getDescription() {
-//        return description;
-//    }
+
+
+
+    public String getDescription() ;
 //
 //    public void setDescription(String description) {
 //        this.description = description;
 //    }
-    public String[] displayInfo();
+    public HashMap<String,String> dataInfo();
 
 }

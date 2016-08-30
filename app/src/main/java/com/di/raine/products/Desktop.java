@@ -1,5 +1,7 @@
 package com.di.raine.products;
 
+import java.util.HashMap;
+
 /**
  * Created by jim on 27/8/2016.
  */
@@ -8,7 +10,7 @@ public class Desktop implements Product {
     private String id;
     private String name;
     private String description;
-
+//    private class classType = Television
     public Desktop() {
     }
 
@@ -20,6 +22,16 @@ public class Desktop implements Product {
 
     public String getDescription() {
         return description;
+    }
+
+
+    @Override
+    public HashMap<String, String> dataInfo() {
+        HashMap<String,String> info = new HashMap<>();
+        info.put("id",id);
+        info.put("name",name);
+        info.put("description",description);
+        return info;
     }
 
     public void setDescription(String description) {
@@ -46,8 +58,5 @@ public class Desktop implements Product {
 
     }
 
-    @Override
-    public String[] displayInfo() {
-        return new String[0];
-    }
+
 }

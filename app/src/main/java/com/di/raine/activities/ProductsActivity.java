@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Pair;
@@ -13,19 +14,15 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.di.raine.R;
-import com.di.raine.products.Desktop;
-import com.di.raine.products.HomeCinema;
 import com.di.raine.products.Laptop;
 import com.di.raine.products.Product;
-import com.di.raine.products.Sound;
-import com.di.raine.products.Television;
 import com.di.raine.services.NetworkService;
 import com.google.gson.Gson;
 
@@ -34,9 +31,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
 
 public class ProductsActivity extends AppCompatActivity {
 
@@ -45,7 +39,6 @@ public class ProductsActivity extends AppCompatActivity {
     private boolean mBound;
     private Menu menu;
     private ArrayList<Pair<Product, Integer>> products;
-
 
 
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -68,16 +61,29 @@ public class ProductsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_products);
-        Intent intent = getIntent();
+        final Intent intent = getIntent();
         products = populateProductList(intent);
         ListView gridview = (ListView) findViewById(R.id.listView);
         gridview.setAdapter(new ImageAdapter(this, products));
 
+        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View v, final int position, long id) {
+                Snackbar.make(v, "clicked  item " + position, Snackbar.LENGTH_SHORT).show();
+                if (mBound) {
+                    Intent i = new Intent(getApplicationContext(), ProductDetailsActivity.class);
+                    String jsonObject = new Gson().toJson(products.get(position).first);
+                    i.putExtra("product", jsonObject);
+                    i.putExtra("productType",  products.get(position).first.getClass().toString());
+                    i.putExtra("productImage",  Integer.valueOf(products.get(position).second));
+                    startActivity(i);
+                }
+            }
+        });
     }
 
     private ArrayList<Pair<Product, Integer>> populateProductList(Intent intent) {
         String productType = intent.getStringExtra("productType");
-        products =new ArrayList<>();
+        products = new ArrayList<>();
 
         String productString = intent.getStringExtra("products");
         JSONArray prod = null;
@@ -99,7 +105,6 @@ public class ProductsActivity extends AppCompatActivity {
                 }
 
             }
-
         } catch (JSONException e) {
             Log.d(TAG, "Error unparsing JSON");
             e.printStackTrace();
@@ -140,10 +145,10 @@ public class ProductsActivity extends AppCompatActivity {
         private static final int WIDTH = 200;
         private static final int HEIGHT = 200;
         private Context mContext;
-        private ArrayList<Pair<Product,Integer>> mThumbIds;
+        private ArrayList<Pair<Product, Integer>> mThumbIds;
 
         // Store the list of image IDs
-        public ImageAdapter(Context c,  ArrayList<Pair<Product,Integer>> ids) {
+        public ImageAdapter(Context c, ArrayList<Pair<Product, Integer>> ids) {
             mContext = c;
             this.mThumbIds = ids;
         }
