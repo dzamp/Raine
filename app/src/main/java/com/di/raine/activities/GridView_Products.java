@@ -1,5 +1,6 @@
 package com.di.raine.activities;
 
+import android.app.SearchManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -7,10 +8,13 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -42,10 +46,13 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public class GridView_Products extends AppCompatActivity {
+public class GridView_Products extends AppCompatActivity /*implements SearchView.OnQueryTextListener*/ {
     private NetworkService networkService;
     private boolean mBound;
     private Menu menu;
+    private int count = 0;
+    SearchManager searchManager =null;
+    private SearchView searchView;
     private ArrayList<Integer> productIds = new ArrayList<Integer>(
             Arrays.asList(R.drawable.homecinema, R.drawable.sound, R.drawable.laptops, R.mipmap.pc,
                     R.mipmap.monitors));
@@ -75,7 +82,8 @@ public class GridView_Products extends AppCompatActivity {
         setContentView(R.layout.listview_products);
         ListView gridview = (ListView) findViewById(R.id.listView);
         gridview.setAdapter(new ImageAdapter(this, productIds));
-
+//        getActionBar().setDisplayHomeAsUpEnabled(true);
+//        getActionBar().setHomeButtonEnabled(true);
         // Set an setOnItemClickListener on the GridView
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, final int position, long id) {
@@ -151,11 +159,43 @@ public class GridView_Products extends AppCompatActivity {
 //        inflater.inflate(R.menu.grip_product_menu, menu);
 //    }
 
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.search:
+                Toast.makeText(getApplicationContext(), "Search functionality", Toast.LENGTH_LONG).show();
+                onSearchRequested();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         this.menu = menu;
         getMenuInflater().inflate(R.menu.grip_product_menu, menu);
+        searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        MenuItem searchActionBarItem = menu.findItem(R.id.search);
+        searchView = (SearchView) MenuItemCompat.getActionView(searchActionBarItem);
+//        searchView = (EnglishVerbSearchView) MenuItemCompat.getActionView(searchActionBarItem);
+
+        ComponentName cn = new ComponentName(this, SearchResultsActivity.class);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(cn));
+//        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setIconifiedByDefault(true);
+//         Associate searchable configuration with the SearchView
+//        SearchManager searchManager =
+//                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+//        SearchView searchView = (SearchView) menu.findItem(R.id.search)
+//                .getActionView();
+//        searchView.setSearchableInfo(searchManager
+//                .getSearchableInfo(getComponentName()));
+        searchView.setSubmitButtonEnabled(true);
+//        searchView.setOnQueryTextListener(this);
         return true;
     }
 
@@ -194,6 +234,33 @@ public class GridView_Products extends AppCompatActivity {
             });
         }
     }
+
+//    @Override
+//    public boolean onQueryTextSubmit(String query) {
+//        searchView.clearFocus();
+//        searchView.setIconified(true);
+////                Bundle appData = new Bundle();
+////        appData.putString("hello", "world");
+////        startSearch(null, false, appData, false);
+////        return true;
+////        onSearchRequested();
+//        Log.d("Count", ""+count++);
+//        searchManager.startSearch(query,false,new ComponentName(this, SearchResultsActivity.class),null,false);
+//        return true;
+//    }
+//
+////    @Override
+////    public boolean onSearchRequested() {
+////        Bundle appData = new Bundle();
+////        appData.putString("hello", "world");
+////        startSearch(null, false, appData, false);
+////        return true;
+////    }
+//
+//    @Override
+//    public boolean onQueryTextChange(String newText) {
+//        return false;
+//    }
 
     public class ImageAdapter extends BaseAdapter {
         private static final int PADDING = 8;
