@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -35,6 +36,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * Created by jim on 31/8/2016.
@@ -77,6 +80,9 @@ public class SearchResultsActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View v, final int position, long id) {
                 Snackbar.make(v, "clicked  item " + position, Snackbar.LENGTH_SHORT).show();
                 if (mBound) {
+                    sortByName(products);
+                    SearchResultsActivity.ImageAdapter adapter = new ImageAdapter(getApplicationContext(),setProductTypeAccordingToQuery());
+                    gridview.setAdapter(adapter);
 
                 }
             }
@@ -156,6 +162,15 @@ public class SearchResultsActivity extends AppCompatActivity {
         // call detail activity for clicked entry
     }
 
+    public void sortByName(ArrayList<Product> sort){
+        Collections.sort(sort, new Comparator<Product>() {
+            @Override
+            public int compare(Product o1, Product o2) {
+                return o1.getName().compareToIgnoreCase(o2.getName());
+            }
+        });
+    }
+
     private void handleIntent(Intent intent) {
 //        handleIntent(getIntent());
 
@@ -223,6 +238,8 @@ public class SearchResultsActivity extends AppCompatActivity {
         public Object getItem(int position) {
             return products.get(position);
         }
+
+
 
         // Will get called to provide the ID that
         // is passed to OnItemClickListener.onItemClick()
