@@ -11,40 +11,18 @@ import java.util.HashMap;
 
 public interface  Product {
 
-//    private String name;
-//    private String id;
-////    private String description;
-//
-//    public Product() {
-//    }
-//
-//    public Product(String name, String id /*, String description*/) {
-//        this.name = name;
-//        this.id = id;
-////        this.description = description;
-//    }
+
 
     public String getName();
+    public void setName(String name);
+    public String getId();
 
-    public void setName(String name);/* {
-        this.name = name;
-    }*/
-
-    public String getId();/* {
-        return id;
-    }*/
-
-    public void setId(String id);/* {
-        this.id = id;
-    }*/
+    public void setId(String id);
 
 
 
     public String getDescription() ;
-//
-//    public void setDescription(String description) {
-//        this.description = description;
-//    }
+
     public HashMap<String,String> dataInfo();
 
 }

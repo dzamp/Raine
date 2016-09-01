@@ -9,41 +9,28 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.LruCache;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.di.raine.services.auth.LoginService;
 import com.di.raine.services.auth.LogoutService;
-import com.google.gson.JsonObject;
+import com.di.raine.services.product.requests.RequestCategories;
+import com.di.raine.services.product.requests.RequestSpecificCategory;
+import com.di.raine.services.product.requests.SearchRequest;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class NetworkService extends Service {
     private final static String TAG = "NetworkService";
+    private static final int cacheSize = 10 * 1024 * 1024;
+    private static Context mContext;
+    private final IBinder mBinder = new NetworkBinder();
     public boolean loggedIn = false;
     private RequestQueue mRequestQueue;
-    private static Context mContext;
     private ImageLoader mImageLoader;
-    private static final int cacheSize = 10 * 1024 * 1024;
-    private final IBinder mBinder = new NetworkBinder();
-
-
-    public class NetworkBinder extends Binder {
-        public NetworkService getService() {
-            // Return this instance of LocalService so clients can call public methods
-            return NetworkService.this;
-        }
-    }
 
     @Override
     public void onCreate() {
@@ -73,13 +60,11 @@ public class NetworkService extends Service {
         return mBinder;
     }
 
-
     public void sendAnotherRequest(Response.Listener<String> successListener, Response.ErrorListener errorListener) {
         LoginService ser = new LoginService();
         StringRequest req = ser.new LoginRequest(Request.Method.POST, LoginService.loginUrl, successListener, errorListener);
         mRequestQueue.add(req);
     }
-
 
     public RequestQueue getRequestQueue() {
         if (mRequestQueue == null) {
@@ -110,60 +95,26 @@ public class NetworkService extends Service {
     }
 
     public void requestCategories(Response.Listener<JSONArray> onSuccessListener, Response.ErrorListener onErrorListener) {
-        RequestCategories requestCategories = new RequestCategories("http://cello.jamwide.com/webserv/api/v0/category/list", onSuccessListener, onErrorListener);
+        RequestCategories requestCategories = new RequestCategories(onSuccessListener, onErrorListener);
         getRequestQueue().add(requestCategories);
     }
 
-
-    public final class RequestCategories extends JsonArrayRequest {
-
-        public RequestCategories(String url, Response.Listener<JSONArray> listener, Response.ErrorListener errorListener) {
-            super(url, listener, errorListener);
-        }
-
-
-        @Override
-        public Map<String, String> getHeaders() throws AuthFailureError {
-            Map<String, String> pars = new HashMap<String, String>();
-            pars.put("Accept", "application/xhtml+xml");
-            pars.put("Accept", "application/json");
-            return pars;
-        }
-
-
-    }
-    public void getCategory(int id, Response.Listener<String> listener, Response.ErrorListener onErrorListener){
-        System.out.println(id);
-        GetCategory getCategory= new GetCategory("http://cello.jamwide.com/webserv/api/v0/product/list?category="+id,
-                listener, onErrorListener);
+    public void getCategory(int id, Response.Listener<String> listener, Response.ErrorListener onErrorListener) {
+        RequestSpecificCategory getCategory = new RequestSpecificCategory(id, listener, onErrorListener);
         getRequestQueue().add(getCategory);
-
-
     }
-    public final class GetCategory extends StringRequest {
-        int id ;
-        private Map<String, String> mParams= new HashMap<>();
 
-        public GetCategory( String url, Response.Listener<String> listener, Response.ErrorListener errorListener) {
-            super( url,  listener, errorListener);
-            this.id = id;
-            mParams.put("category",Integer.toString(id));
-        }
+    public void searchProducts(String query, Response.Listener<String> listener, Response.ErrorListener onErrorListener){
+        SearchRequest searchRequest = new SearchRequest(query,  listener, onErrorListener);
+        getRequestQueue().add(searchRequest);
+    }
 
-
-        @Override
-        public Map<String, String> getHeaders() throws AuthFailureError {
-            Map<String, String> pars = new HashMap<String, String>();
-            pars.put("Accept", "application/xhtml+xml");
-            pars.put("Accept", "application/json");
-            return pars;
-        }
-
-
-        @Override
-        public Map<String, String> getParams() {
-            return mParams;
+    public class NetworkBinder extends Binder {
+        public NetworkService getService() {
+            // Return this instance of LocalService so clients can call public methods
+            return NetworkService.this;
         }
     }
+
 
 }
