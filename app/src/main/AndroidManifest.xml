@@ -34,9 +34,6 @@
 
         <service android:name=".services.NetworkService" />
 
-        <!--<meta-data-->
-        <!--android:name="android.app.default_searchable"-->
-        <!--android:value=".SearchResultsActivity" />-->
 
 
         <activity
@@ -49,7 +46,7 @@
 
         <activity
             android:name=".activities.SearchResultsActivity"
-            android:label="SearchResultsActivity">
+            android:label="Results">
             <!--android:launchMode="singleTop">-->
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />

@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.design.widget.Snackbar;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -31,6 +33,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class ProductsActivity extends AppCompatActivity {
 
@@ -39,7 +43,7 @@ public class ProductsActivity extends AppCompatActivity {
     private boolean mBound;
     private Menu menu;
     private ArrayList<Pair<Product, Integer>> products;
-
+    private ListView gridview;
 
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override
@@ -63,7 +67,7 @@ public class ProductsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_products);
         final Intent intent = getIntent();
         products = populateProductList(intent);
-        ListView gridview = (ListView) findViewById(R.id.listView);
+        gridview = (ListView) findViewById(R.id.listView);
         gridview.setAdapter(new ImageAdapter(this, products));
 
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -73,8 +77,8 @@ public class ProductsActivity extends AppCompatActivity {
                     Intent i = new Intent(getApplicationContext(), ProductDetailsActivity.class);
                     String jsonObject = new Gson().toJson(products.get(position).first);
                     i.putExtra("product", jsonObject);
-                    i.putExtra("productType",  products.get(position).first.getClass().toString());
-                    i.putExtra("productImage",  Integer.valueOf(products.get(position).second));
+                    i.putExtra("productType", products.get(position).first.getClass().toString());
+                    i.putExtra("productImage", Integer.valueOf(products.get(position).second));
                     startActivity(i);
                 }
             }
@@ -117,7 +121,7 @@ public class ProductsActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         this.menu = menu;
-        getMenuInflater().inflate(R.menu.grip_product_menu, menu);
+        getMenuInflater().inflate(R.menu.search_result_menu, menu);
         return true;
     }
 
@@ -139,6 +143,45 @@ public class ProductsActivity extends AppCompatActivity {
         }
     }
 
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        ProductsActivity.ImageAdapter adapter = new ProductsActivity.ImageAdapter(getApplicationContext(), products);
+        switch (item.getItemId()) {
+            case R.id.submenu_sort_by_model:
+                sortByName(products);
+                gridview.setAdapter(adapter);
+                break;
+            case R.id.submenu_sort_high_to_low:
+                Log.d(TAG, "to be implemented");
+                gridview.setAdapter(adapter);
+                // FIXME: 2/9/2016
+                break;
+            case R.id.submenu_sort_low_to_high:
+                Log.d(TAG, "to be implemented");
+                gridview.setAdapter(adapter);
+                // FIXME: 2/9/2016
+                break;
+            case R.id.submenu_sort_by_proximity:
+                Log.d(TAG, "to be implemented");
+                gridview.setAdapter(adapter);
+                // FIXME: 2/9/2016
+                break;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+//        return super.onContextItemSelected(item);
+        return true;
+    }
+
+    public void sortByName(ArrayList<Pair<Product, Integer>> sort) {
+        Collections.sort(sort, new Comparator<Pair<Product, Integer>>() {
+            @Override
+            public int compare(Pair<Product, Integer> o1, Pair<Product, Integer> o2) {
+                return o1.first.getName().compareToIgnoreCase(o2.first.getName());
+            }
+        });
+    }
 
     public class ImageAdapter extends BaseAdapter {
         private static final int PADDING = 8;
@@ -189,7 +232,7 @@ public class ProductsActivity extends AppCompatActivity {
                 Log.d(TAG, String.valueOf(position));
                 textView.setText(products.get(position).first.getName());
 //                Log.d("-----------------", productTexts.get(position) + " " + mThumbIds.get(position));
-
+                textView.setTextColor(Color.BLACK);
                 imageView.setImageResource(mThumbIds.get(position).second);
             } else {
                 grid = (View) convertView;

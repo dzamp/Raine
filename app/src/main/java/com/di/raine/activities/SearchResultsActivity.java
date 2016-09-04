@@ -6,6 +6,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.design.widget.Snackbar;
@@ -13,6 +14,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -50,6 +53,7 @@ public class SearchResultsActivity extends AppCompatActivity {
     private Menu menu;
     private String query;
     private ArrayList<Product> products = new ArrayList<>();
+    private final static int[] ids = {1,2,3,4};
     private String productType = "";
     private ListView gridview;
 
@@ -62,7 +66,6 @@ public class SearchResultsActivity extends AppCompatActivity {
             networkService = binder.getService();
             mBound = true;
             handleIntent(getIntent());
-//            setListViewWithProducts();
         }
 
         @Override
@@ -71,19 +74,47 @@ public class SearchResultsActivity extends AppCompatActivity {
         }
     };
 
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        SearchResultsActivity.ImageAdapter adapter = new ImageAdapter(getApplicationContext(),setProductTypeAccordingToQuery());
+        switch (item.getItemId()){
+            case R.id.submenu_sort_by_model:
+                sortByName(products);
+                gridview.setAdapter(adapter);
+                break;
+            case R.id.submenu_sort_high_to_low:
+                Log.d(TAG, "to be implemented");
+                gridview.setAdapter(adapter);
+                // FIXME: 2/9/2016
+                break;
+            case R.id.submenu_sort_low_to_high:
+                Log.d(TAG, "to be implemented");
+                gridview.setAdapter(adapter);
+                // FIXME: 2/9/2016
+                break;
+            case R.id.submenu_sort_by_proximity:
+                Log.d(TAG, "to be implemented");
+                gridview.setAdapter(adapter);
+                // FIXME: 2/9/2016
+                break;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+//        return super.onContextItemSelected(item);
+        return true;
+    }
+
     public void setListViewWithProducts(){
         gridview = (ListView) findViewById(R.id.listView);
-
         gridview.setAdapter(new SearchResultsActivity.ImageAdapter(this, setProductTypeAccordingToQuery()));
-
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, final int position, long id) {
                 Snackbar.make(v, "clicked  item " + position, Snackbar.LENGTH_SHORT).show();
                 if (mBound) {
-                    sortByName(products);
+//                    sortByName(products);
                     SearchResultsActivity.ImageAdapter adapter = new ImageAdapter(getApplicationContext(),setProductTypeAccordingToQuery());
                     gridview.setAdapter(adapter);
-
                 }
             }
         });
@@ -92,8 +123,6 @@ public class SearchResultsActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
-
     }
 
     @Override
@@ -101,7 +130,6 @@ public class SearchResultsActivity extends AppCompatActivity {
         super.onStop();
         // Unbind from the service
         if (mBound) {
-//            networkService.sendLogoutRequest();
             unbindService(mConnection);
             mBound = false;
         }
@@ -111,7 +139,14 @@ public class SearchResultsActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         this.menu = menu;
-        getMenuInflater().inflate(R.menu.grip_product_menu, menu);
+        getMenuInflater().inflate(R.menu.search_result_menu, menu);
+
+//        SubMenu submenu = menu.addSubMenu(0, Menu.FIRST, Menu.NONE, "Sort by");
+//        submenu.add(0, ids[0], Menu.NONE, "Model");
+//        submenu.add(0, ids[1], Menu.NONE, "Price Low->High");
+//        submenu.add(0, ids[2], Menu.NONE, "Price High->Low");
+//        submenu.add(0, ids[3], Menu.NONE, "Popularity");
+//        getMenuInflater().inflate(R.menu.search_result_menu, submenu);
         return true;
     }
 
@@ -132,9 +167,6 @@ public class SearchResultsActivity extends AppCompatActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.listview_products);
-//        ListView gridview = (ListView) findViewById(R.id.listView);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_products);
         Toast.makeText(getApplicationContext(), "Hello from SearchResultsActivity", Toast.LENGTH_LONG).show();
@@ -205,7 +237,7 @@ public class SearchResultsActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "error in search", Toast.LENGTH_LONG).show();
                 }
             });
-            doSearch(query);
+
         }
     }
 
@@ -239,8 +271,6 @@ public class SearchResultsActivity extends AppCompatActivity {
             return products.get(position);
         }
 
-
-
         // Will get called to provide the ID that
         // is passed to OnItemClickListener.onItemClick()
         @Override
@@ -250,25 +280,18 @@ public class SearchResultsActivity extends AppCompatActivity {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-
-
             View grid;
             LayoutInflater inflater = (LayoutInflater) mContext
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
             // if convertView's not recycled, initialize some attributes
             if (convertView == null) {
-//                imageView = new ImageView(mContext);
-//                imageView.setLayoutParams(new GridView.LayoutParams(WIDTH, HEIGHT));
-//                imageView.setPadding(PADDING, PADDING, PADDING, PADDING);
-//                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 grid = new View(mContext);
                 grid = inflater.inflate(R.layout.image_and_text, null);
                 TextView textView = (TextView) grid.findViewById(R.id.grid_image_text);
+                textView.setTextColor(Color.BLACK);
                 ImageView imageView = (ImageView) grid.findViewById(R.id.image_grid);
                 textView.setText(products.get(position).getName());
 //                Log.d("-----------------", productTexts.get(position) + " " + mThumbIds.get(position));
-
                 imageView.setImageResource(mThumbIds);
             } else {
                 grid = (View) convertView;
