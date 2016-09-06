@@ -19,9 +19,11 @@ import com.di.raine.services.auth.LoginService;
 import com.di.raine.services.auth.LogoutService;
 import com.di.raine.services.product.requests.RequestCategories;
 import com.di.raine.services.product.requests.RequestSpecificCategory;
+import com.di.raine.services.product.requests.RequestSpecificProductBranches;
 import com.di.raine.services.product.requests.SearchRequest;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class NetworkService extends Service {
     private final static String TAG = "NetworkService";
@@ -107,6 +109,12 @@ public class NetworkService extends Service {
     public void searchProducts(String query, Response.Listener<String> listener, Response.ErrorListener onErrorListener){
         SearchRequest searchRequest = new SearchRequest(query,  listener, onErrorListener);
         getRequestQueue().add(searchRequest);
+    }
+
+
+    public void requestProductBranches (String id, Response.Listener<String> listener, Response.ErrorListener onErrorListener){
+        RequestSpecificProductBranches requestSpecificProductBranches= new RequestSpecificProductBranches(id,listener,onErrorListener);
+        getRequestQueue().add(requestSpecificProductBranches);
     }
 
     public class NetworkBinder extends Binder {

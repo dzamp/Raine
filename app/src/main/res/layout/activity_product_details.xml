@@ -109,12 +109,33 @@
             android:layout_alignBottom="@+id/thirdLayout"
             android:background="@android:color/darker_gray" />
 
-        <TextView
-            android:id="@+id/specificationText"
-            style="@style/AppTheme"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="" />
+
+        <ListView
+            android:id="@+id/listBranch"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:horizontalSpacing="5px"
+            android:numColumns="auto_fit"
+            android:stretchMode="columnWidth"
+            android:verticalSpacing="20dp"
+            android:scrollbars="horizontal" >
+
+
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:text="Hello"/>-->
+
+        </ListView>
+
+
+        <!--<TextView-->
+            <!--android:id="@+id/specificationText"-->
+            <!--style="@style/AppTheme"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="" />-->
 
     </LinearLayout>
 

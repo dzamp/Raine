@@ -96,6 +96,7 @@ public class GridView_Products extends AppCompatActivity /*implements SearchView
                             ArrayList<Product> products = new ArrayList<>();
                             try {
                                 obj = (JSONArray) new JSONObject(response).get("data");
+
                                 String pType= "";
                                Product productObj =  getProductAccordingtoPosition(position, pType);
                                 //start new Intent for new Activity
@@ -304,10 +305,6 @@ public class GridView_Products extends AppCompatActivity /*implements SearchView
 
             // if convertView's not recycled, initialize some attributes
             if (convertView == null) {
-//                imageView = new ImageView(mContext);
-//                imageView.setLayoutParams(new GridView.LayoutParams(WIDTH, HEIGHT));
-//                imageView.setPadding(PADDING, PADDING, PADDING, PADDING);
-//                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 grid = new View(mContext);
                 grid = inflater.inflate(R.layout.image_and_text, null);
                 TextView textView = (TextView) grid.findViewById(R.id.grid_image_text);

@@ -44,7 +44,7 @@ public class ProductsActivity extends AppCompatActivity {
     private Menu menu;
     private ArrayList<Pair<Product, Integer>> products;
     private ListView gridview;
-
+    private ArrayList<String> productPrices;
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName className,
@@ -53,6 +53,23 @@ public class ProductsActivity extends AppCompatActivity {
             NetworkService.NetworkBinder binder = (NetworkService.NetworkBinder) service;
             networkService = binder.getService();
             mBound = true;
+            final Intent intent = getIntent();
+            products = populateProductList(intent);
+            gridview = (ListView) findViewById(R.id.listView);
+            gridview.setAdapter(new ImageAdapter(getApplicationContext(), products));
+            gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                public void onItemClick(AdapterView<?> parent, View v, final int position, long id) {
+                    Snackbar.make(v, "clicked  item " + position, Snackbar.LENGTH_SHORT).show();
+                    if (mBound) {
+                        Intent i = new Intent(getApplicationContext(), ProductDetailsActivity.class);
+                        String jsonObject = new Gson().toJson(products.get(position).first);
+                        i.putExtra("product", jsonObject);
+                        i.putExtra("productType", products.get(position).first.getClass().toString());
+                        i.putExtra("productImage", Integer.valueOf(products.get(position).second));
+                        startActivity(i);
+                    }
+                }
+            });
         }
 
         @Override
@@ -65,29 +82,13 @@ public class ProductsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_products);
-        final Intent intent = getIntent();
-        products = populateProductList(intent);
-        gridview = (ListView) findViewById(R.id.listView);
-        gridview.setAdapter(new ImageAdapter(this, products));
 
-        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v, final int position, long id) {
-                Snackbar.make(v, "clicked  item " + position, Snackbar.LENGTH_SHORT).show();
-                if (mBound) {
-                    Intent i = new Intent(getApplicationContext(), ProductDetailsActivity.class);
-                    String jsonObject = new Gson().toJson(products.get(position).first);
-                    i.putExtra("product", jsonObject);
-                    i.putExtra("productType", products.get(position).first.getClass().toString());
-                    i.putExtra("productImage", Integer.valueOf(products.get(position).second));
-                    startActivity(i);
-                }
-            }
-        });
     }
 
     private ArrayList<Pair<Product, Integer>> populateProductList(Intent intent) {
         String productType = intent.getStringExtra("productType");
         products = new ArrayList<>();
+        productPrices = new ArrayList<>();
 
         String productString = intent.getStringExtra("products");
         JSONArray prod = null;
@@ -97,7 +98,7 @@ public class ProductsActivity extends AppCompatActivity {
                 Gson son = new Gson();
                 JSONObject json = prod.getJSONObject(i);
                 if (productType.contains("Laptop")) {
-                    products.add(new Pair(son.fromJson(json.toString(), Laptop.class), R.drawable.laptop));
+                    products.add(new Pair(son.fromJson(json.get("product").toString(), Laptop.class), R.drawable.laptop));
                 } else if (productType.contains("Desktop")) {
                     products.add(new Pair(son.fromJson(json.toString(), Laptop.class), R.mipmap.pc));
                 } else if (productType.contains("Sound")) {
@@ -107,7 +108,7 @@ public class ProductsActivity extends AppCompatActivity {
                 } else if (productType.contains("Television")) {
                     products.add(new Pair(son.fromJson(json.toString(), Laptop.class), R.mipmap.monitors));
                 }
-
+                productPrices.add(json.getString("price"));
             }
         } catch (JSONException e) {
             Log.d(TAG, "Error unparsing JSON");
@@ -130,6 +131,7 @@ public class ProductsActivity extends AppCompatActivity {
         super.onStart();
         Intent intent = new Intent(this, NetworkService.class);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+
     }
 
     @Override
@@ -230,8 +232,7 @@ public class ProductsActivity extends AppCompatActivity {
                 TextView textView = (TextView) grid.findViewById(R.id.grid_image_text);
                 ImageView imageView = (ImageView) grid.findViewById(R.id.image_grid);
                 Log.d(TAG, String.valueOf(position));
-                textView.setText(products.get(position).first.getName());
-//                Log.d("-----------------", productTexts.get(position) + " " + mThumbIds.get(position));
+                textView.setText(products.get(position).first.getName() + "\nPrice : " + productPrices.get(position) + "€");
                 textView.setTextColor(Color.BLACK);
                 imageView.setImageResource(mThumbIds.get(position).second);
             } else {
