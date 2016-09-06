@@ -45,6 +45,7 @@ public class ProductsActivity extends AppCompatActivity {
     private ArrayList<Pair<Product, Integer>> products;
     private ListView gridview;
     private ArrayList<String> productPrices;
+    private ArrayList<Pair<Product,String>> product_price_pair;
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName className,
@@ -62,9 +63,9 @@ public class ProductsActivity extends AppCompatActivity {
                     Snackbar.make(v, "clicked  item " + position, Snackbar.LENGTH_SHORT).show();
                     if (mBound) {
                         Intent i = new Intent(getApplicationContext(), ProductDetailsActivity.class);
-                        String jsonObject = new Gson().toJson(products.get(position).first);
+                        String jsonObject = new Gson().toJson(product_price_pair.get(position).first);
                         i.putExtra("product", jsonObject);
-                        i.putExtra("productType", products.get(position).first.getClass().toString());
+                        i.putExtra("productType", product_price_pair.get(position).first.getClass().toString());
                         i.putExtra("productImage", Integer.valueOf(products.get(position).second));
                         startActivity(i);
                     }
@@ -89,6 +90,7 @@ public class ProductsActivity extends AppCompatActivity {
         String productType = intent.getStringExtra("productType");
         products = new ArrayList<>();
         productPrices = new ArrayList<>();
+        product_price_pair =  new ArrayList<>();
 
         String productString = intent.getStringExtra("products");
         JSONArray prod = null;
@@ -100,15 +102,16 @@ public class ProductsActivity extends AppCompatActivity {
                 if (productType.contains("Laptop")) {
                     products.add(new Pair(son.fromJson(json.get("product").toString(), Laptop.class), R.drawable.laptop));
                 } else if (productType.contains("Desktop")) {
-                    products.add(new Pair(son.fromJson(json.toString(), Laptop.class), R.mipmap.pc));
+                    products.add(new Pair(son.fromJson(json.get("product").toString(), Laptop.class), R.mipmap.pc));
                 } else if (productType.contains("Sound")) {
-                    products.add(new Pair(son.fromJson(json.toString(), Laptop.class), R.drawable.sound));
+                    products.add(new Pair(son.fromJson(json.get("product").toString(), Laptop.class), R.drawable.sound));
                 } else if (productType.contains("HomeCinema")) {
-                    products.add(new Pair(son.fromJson(json.toString(), Laptop.class), R.drawable.homecinema));
+                    products.add(new Pair(son.fromJson(json.get("product").toString(), Laptop.class), R.drawable.homecinema));
                 } else if (productType.contains("Television")) {
-                    products.add(new Pair(son.fromJson(json.toString(), Laptop.class), R.mipmap.monitors));
+                    products.add(new Pair(son.fromJson(json.get("product").toString(), Laptop.class), R.mipmap.monitors));
                 }
                 productPrices.add(json.getString("price"));
+                product_price_pair.add(new Pair<Product, String>(products.get(i).first,productPrices.get(i)));
             }
         } catch (JSONException e) {
             Log.d(TAG, "Error unparsing JSON");
@@ -151,18 +154,18 @@ public class ProductsActivity extends AppCompatActivity {
         ProductsActivity.ImageAdapter adapter = new ProductsActivity.ImageAdapter(getApplicationContext(), products);
         switch (item.getItemId()) {
             case R.id.submenu_sort_by_model:
-                sortByName(products);
+                sortByName(product_price_pair);
                 gridview.setAdapter(adapter);
                 break;
             case R.id.submenu_sort_high_to_low:
+                sortByPriceHighLow(product_price_pair);
                 Log.d(TAG, "to be implemented");
                 gridview.setAdapter(adapter);
-                // FIXME: 2/9/2016
                 break;
             case R.id.submenu_sort_low_to_high:
+                sortByPriceLowHigh(product_price_pair);
                 Log.d(TAG, "to be implemented");
                 gridview.setAdapter(adapter);
-                // FIXME: 2/9/2016
                 break;
             case R.id.submenu_sort_by_proximity:
                 Log.d(TAG, "to be implemented");
@@ -176,11 +179,34 @@ public class ProductsActivity extends AppCompatActivity {
         return true;
     }
 
-    public void sortByName(ArrayList<Pair<Product, Integer>> sort) {
-        Collections.sort(sort, new Comparator<Pair<Product, Integer>>() {
+    public void sortByName(ArrayList<Pair<Product, String>> sort) {
+        Collections.sort(sort, new Comparator<Pair<Product, String>>() {
             @Override
-            public int compare(Pair<Product, Integer> o1, Pair<Product, Integer> o2) {
+            public int compare(Pair<Product, String> o1, Pair<Product, String> o2) {
                 return o1.first.getName().compareToIgnoreCase(o2.first.getName());
+            }
+        });
+    }
+
+    public void sortByPriceLowHigh(ArrayList<Pair<Product, String>> sort) {
+        Collections.sort(sort, new Comparator<Pair<Product, String>>() {
+            @Override
+            public int compare(Pair<Product, String> o1, Pair<Product, String> o2) {
+                int num1 = Integer.parseInt(o1.second);
+                int num2 = Integer.parseInt(o2.second);
+                return num1 - num2 ;
+            }
+        });
+    }
+
+
+    public void sortByPriceHighLow(ArrayList<Pair<Product, String>> sort) {
+        Collections.sort(sort, new Comparator<Pair<Product, String>>() {
+            @Override
+            public int compare(Pair<Product, String> o1, Pair<Product, String> o2) {
+                int num1 = Integer.parseInt(o1.second);
+                int num2 = Integer.parseInt(o2.second);
+                return num2 - num1 ;
             }
         });
     }
@@ -232,7 +258,8 @@ public class ProductsActivity extends AppCompatActivity {
                 TextView textView = (TextView) grid.findViewById(R.id.grid_image_text);
                 ImageView imageView = (ImageView) grid.findViewById(R.id.image_grid);
                 Log.d(TAG, String.valueOf(position));
-                textView.setText(products.get(position).first.getName() + "\nPrice : " + productPrices.get(position) + "€");
+                textView.setText(product_price_pair.get(position).first.getName() + "\nPrice : "
+                        + product_price_pair.get(position).second  + "€");
                 textView.setTextColor(Color.BLACK);
                 imageView.setImageResource(mThumbIds.get(position).second);
             } else {

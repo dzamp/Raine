@@ -140,13 +140,6 @@ public class SearchResultsActivity extends AppCompatActivity {
         super.onCreateOptionsMenu(menu);
         this.menu = menu;
         getMenuInflater().inflate(R.menu.search_result_menu, menu);
-
-//        SubMenu submenu = menu.addSubMenu(0, Menu.FIRST, Menu.NONE, "Sort by");
-//        submenu.add(0, ids[0], Menu.NONE, "Model");
-//        submenu.add(0, ids[1], Menu.NONE, "Price Low->High");
-//        submenu.add(0, ids[2], Menu.NONE, "Price High->Low");
-//        submenu.add(0, ids[3], Menu.NONE, "Popularity");
-//        getMenuInflater().inflate(R.menu.search_result_menu, submenu);
         return true;
     }
 
@@ -169,7 +162,6 @@ public class SearchResultsActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_products);
-        Toast.makeText(getApplicationContext(), "Hello from SearchResultsActivity", Toast.LENGTH_LONG).show();
         Intent intent = new Intent(this, NetworkService.class);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }

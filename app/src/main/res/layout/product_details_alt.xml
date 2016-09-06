@@ -6,21 +6,21 @@
     android:orientation="vertical">
 
     <!--<LinearLayout-->
-        <!--android:layout_width="fill_parent"-->
-        <!--android:layout_height="fill_parent"-->
-        <!--android:fillViewport="true"-->
-        <!--android:orientation="horizontal">-->
+    <!--android:layout_width="fill_parent"-->
+    <!--android:layout_height="fill_parent"-->
+    <!--android:fillViewport="true"-->
+    <!--android:orientation="horizontal">-->
 
     <TextView
         android:id="@+id/product_label"
+        style="@style/AppTheme"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Product"
-        android:textColorHighlight="@color/mycolor"
-        android:textColor="@color/colorPrimary"
-        style="@style/AppTheme"
-        android:textSize="8pt"
         android:textAllCaps="true"
+        android:textColor="@color/colorPrimary"
+        android:textColorHighlight="@color/mycolor"
+        android:textSize="8pt"
         android:textStyle="bold|italic" />
 
     <View
@@ -45,50 +45,51 @@
         android:background="@android:color/darker_gray" />
 
 
-
-
-    <TextView   android:id="@+id/description_title"
-        android:text="Description"
-        android:clickable="true"
-        android:textSize="30px"
-        android:textColor="@color/colorPrimaryDark"
-        android:onClick="show_contents"
+    <TextView
+        android:id="@+id/description_title"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_width="wrap_content"/>
+        android:clickable="true"
+        android:onClick="show_contents"
+        android:text="Description"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="30px" />
 
     <!--content to hide/show -->
-    <TextView   android:id="@+id/product_description_text"
+    <TextView
+        android:id="@+id/product_description_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="Info aboout product"
-        android:typeface="sans"
+        android:typeface="sans" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@android:color/darker_gray" />
+
+
+    <TextView
+        android:id="@+id/Stores"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_width="wrap_content"/>
-
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="@android:color/darker_gray" />
-
-    <TextView   android:id="@+id/Stores"
         android:text="Stores"
-        android:typeface="normal"
-        android:textSize="30px"
         android:textColor="@color/colorPrimary"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"/>
+        android:textSize="30px"
+        android:typeface="normal" />
 
 
-        <ListView
-            android:id="@+id/listBranch_alt"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            style="@style/ListView"
-            android:horizontalSpacing="50px"
-            android:numColumns="auto_fit"
-            android:scrollbars="horizontal"
-            android:stretchMode="columnWidth"
-            android:verticalSpacing="50dp" />
+    <ListView
+        android:id="@+id/listBranch_alt"
+        style="@style/ListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:horizontalSpacing="50px"
+        android:numColumns="auto_fit"
+        android:scrollbars="horizontal"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="50dp" />
 
     <!--</LinearLayout>-->
 
