@@ -130,6 +130,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        Intent intent = new Intent(this, NetworkService.class);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 
     }
 
@@ -142,6 +144,9 @@ public class ProductDetailsActivity extends AppCompatActivity {
             mBound = false;
         }
     }
+
+
+
 
 
     private class BranchesAdapter extends ArrayAdapter<Branch> {

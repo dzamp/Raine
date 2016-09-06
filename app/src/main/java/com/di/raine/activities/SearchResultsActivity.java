@@ -66,6 +66,8 @@ public class SearchResultsActivity extends AppCompatActivity {
             networkService = binder.getService();
             mBound = true;
             handleIntent(getIntent());
+
+
         }
 
         @Override
@@ -112,9 +114,12 @@ public class SearchResultsActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View v, final int position, long id) {
                 Snackbar.make(v, "clicked  item " + position, Snackbar.LENGTH_SHORT).show();
                 if (mBound) {
-//                    sortByName(products);
-                    SearchResultsActivity.ImageAdapter adapter = new ImageAdapter(getApplicationContext(),setProductTypeAccordingToQuery());
-                    gridview.setAdapter(adapter);
+                    Intent i = new Intent(getApplicationContext(), ProductDetailsActivity.class);
+                    String jsonObject = new Gson().toJson(products.get(position));
+                    i.putExtra("product", jsonObject);
+                    i.putExtra("productType", products.get(position).getClass().toString());
+                    i.putExtra("productImage", setProductTypeAccordingToQuery());
+                    startActivity(i);
                 }
             }
         });
@@ -123,11 +128,16 @@ public class SearchResultsActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        products = new ArrayList<>();
+        Intent intent = new Intent(this, NetworkService.class);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+
         // Unbind from the service
         if (mBound) {
             unbindService(mConnection);
@@ -162,6 +172,7 @@ public class SearchResultsActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_products);
+        gridview = (ListView) findViewById(R.id.listView);
         Intent intent = new Intent(this, NetworkService.class);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
@@ -178,7 +189,8 @@ public class SearchResultsActivity extends AppCompatActivity {
             Toast.makeText(this, "Suggestion: " + uri, Toast.LENGTH_SHORT).show();
         }
         setIntent(intent);
-        handleIntent(intent);
+//        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+//        handleIntent(intent);
     }
 
     public void onListItemClick(ListView l,
