@@ -11,10 +11,10 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Pair;
@@ -36,6 +36,8 @@ import com.di.raine.R;
 import com.di.raine.branches.Branch;
 import com.di.raine.branches.Locality;
 import com.di.raine.branches.Point;
+import com.di.raine.cartHelper.ShoppingCartHelper;
+import com.di.raine.products.CartProduct;
 import com.di.raine.products.Desktop;
 import com.di.raine.products.HomeCinema;
 import com.di.raine.products.Laptop;
@@ -64,6 +66,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private LocationManager mLocationManager;
     private Location currentLocation;
     private ListView gridview;
+    private int productImage;
 
     private LocationListener mLocationListener = new LocationListener() {
         @Override
@@ -117,11 +120,18 @@ public class ProductDetailsActivity extends AppCompatActivity {
                         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                Uri gmmIntentUri = Uri.parse("google.streetview:cbll=" + Double.toString(branches.get(position).first.getLocality().getPoint().getLatitude())
+                               /* Uri gmmIntentUri = Uri.parse("google.streetview:cbll=" + Double.toString(branches.get(position).first.getLocality().getPoint().getLatitude())
                                         + "," + Double.toString(branches.get(position).first.getLocality().getPoint().getLongitude()));
                                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                                mapIntent.setPackage("com.google.android.apps.maps");
-                                startActivity(mapIntent);
+                                mapIntent.setPackage("com.google.android.apps.maps");*/
+
+                                CartProduct cartProduct = new CartProduct(product.getName(), ContextCompat.getDrawable(getApplicationContext(),
+                                        productImage),product.getDescription(), Double.valueOf(branches.get(position).second), branches.get(position).first);
+                                List<CartProduct> cartProducts = ShoppingCartHelper.getCatalog(getApplicationContext());
+                                cartProducts.add(cartProduct);
+                                Intent productDetailsIntent = new Intent(getBaseContext(), com.di.raine.cartActivities.ProductDetailsActivity.class);
+                                productDetailsIntent.putExtra(ShoppingCartHelper.PRODUCT_INDEX, 0);
+                                startActivity(productDetailsIntent);
                             }
                         });
 
@@ -201,6 +211,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
         TextView descriptionText = (TextView) findViewById(R.id.product_description_text);
         descriptionText.setText(product.dataInfo().get("description"));
         ImageView image = (ImageView) findViewById(R.id.productDetailImage);
+        productImage = intent.getIntExtra("productImage",0);
         System.out.println("Image id " + (intent.getIntExtra("productImage", 0)));
         image.setImageResource((intent.getIntExtra("productImage", 0)));
         descriptionInfo = (TextView) findViewById(R.id.product_description_text);

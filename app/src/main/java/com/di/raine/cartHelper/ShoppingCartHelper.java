@@ -6,7 +6,11 @@ package com.di.raine.cartHelper;
 import java.util.List;
 import java.util.Vector;
 
+import android.content.Context;
 import android.content.res.Resources;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
+import android.support.v4.content.ContextCompat;
 
 import com.di.raine.branches.Branch;
 import com.di.raine.branches.Locality;
@@ -22,18 +26,18 @@ public class ShoppingCartHelper {
     private static List<CartProduct> cart;
     private static List<Branch> shops;
 
-    public static List<CartProduct> getCatalog(Resources res) {
+    public static List<CartProduct> getCatalog(Context cxt) {
         if (catalog == null) {
             catalog = new Vector<CartProduct>();
-            catalog.add(new CartProduct("laptop", res
-                    .getDrawable(R.drawable.camera , null),
-                    "A very good Laptop", 29.99,new Branch("katasthma 1", "111" ,new Locality("Athens","12345","kapou 13",new Point(123,345)))));
-            catalog.add(new CartProduct("Camera", res
-                    .getDrawable(R.drawable.camera, null),
-                    "What a nice camera", 24.99,new Branch("katasthma 1", "111" ,new Locality("Athens","12345","kapou 13",new Point(123,345)))));
-            catalog.add(new CartProduct("something", res
-                    .getDrawable(R.drawable.camera, null),
-                    "Someting some", 14.99,new Branch("katasthma 1", "111" ,new Locality("Athens","12345","kapou 13",new Point(123,345)))));
+
+//            catalog.add(new CartProduct("laptop", ContextCompat.getDrawable(cxt,R.drawable.camera ),
+//                    "A very good Laptop", 29.99,new Branch("katasthma 1", "111" ,new Locality("Athens","12345","kapou 13",new Point(123,345)))));
+//            catalog.add(new CartProduct("Camera", res
+//                    .getDrawable(R.drawable.camera, null),
+//                    "What a nice camera", 24.99,new Branch("katasthma 1", "111" ,new Locality("Athens","12345","kapou 13",new Point(123,345)))));
+//            catalog.add(new CartProduct("something", res
+//                    .getDrawable(R.drawable.camera, null),
+//                    "Someting some", 14.99,new Branch("katasthma 1", "111" ,new Locality("Athens","12345","kapou 13",new Point(123,345)))));
         }
 
         return catalog;

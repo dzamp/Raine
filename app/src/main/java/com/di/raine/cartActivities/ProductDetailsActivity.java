@@ -25,7 +25,7 @@ public class ProductDetailsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.productdetails);
 
-        List<CartProduct> catalog = ShoppingCartHelper.getCatalog(getResources());
+        List<CartProduct> catalog = ShoppingCartHelper.getCatalog(getApplicationContext());
         final List<CartProduct> cart = ShoppingCartHelper.getCart();
 
         int productIndex = getIntent().getExtras().getInt(ShoppingCartHelper.PRODUCT_INDEX);

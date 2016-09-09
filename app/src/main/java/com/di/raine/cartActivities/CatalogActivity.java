@@ -32,7 +32,7 @@ public class CatalogActivity extends Activity {
         setContentView(R.layout.catalog);
 
         // Obtain a reference to the product catalog
-        mProductList = ShoppingCartHelper.getCatalog(getResources());
+        mProductList = ShoppingCartHelper.getCatalog(getApplicationContext());
 
         // Create the list
         ListView listViewCatalog = (ListView) findViewById(R.id.ListViewCatalog);
