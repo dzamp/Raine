@@ -26,7 +26,7 @@ public class ShoppingCartHelper {
         if (catalog == null) {
             catalog = new Vector<CartProduct>();
             catalog.add(new CartProduct("laptop", res
-                    .getDrawable( R.drawable.camera , null),
+                    .getDrawable(R.drawable.camera , null),
                     "A very good Laptop", 29.99,new Branch("katasthma 1", "111" ,new Locality("Athens","12345","kapou 13",new Point(123,345)))));
             catalog.add(new CartProduct("Camera", res
                     .getDrawable(R.drawable.camera, null),

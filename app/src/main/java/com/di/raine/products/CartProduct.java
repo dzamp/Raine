@@ -1,46 +1,32 @@
 package com.di.raine.products;
 
+import android.graphics.drawable.Drawable;
+
 import com.di.raine.branches.Branch;
 
-/**
- * Created by jim on 7/9/2016.
- */
+public class CartProduct {
 
-public class CartProduct  {
-    private Product productInCart;
-    private float price;
-    private Branch branch;
+    public String title;
+    public Drawable productImage;
+    public String description;
+    public double price;
+    public boolean selected;
+    public Branch store;
 
-    public CartProduct() {
-    }
-
-    public CartProduct(Product productInCart, float price, Branch branch) {
-        this.productInCart = productInCart;
+    public CartProduct(String title, Drawable productImage, String description,
+                       double price, Branch store) {
+        this.title = title;
+        this.productImage = productImage;
+        this.description = description;
         this.price = price;
-        this.branch = branch;
+        this.store = store;
     }
 
-    public Product getProductInCart() {
-        return productInCart;
+    public Branch getStore() {
+        return store;
     }
 
-    public void setProductInCart(Product productInCart) {
-        this.productInCart = productInCart;
-    }
-
-    public float getPrice() {
-        return price;
-    }
-
-    public void setPrice(float price) {
-        this.price = price;
-    }
-
-    public Branch getBranch() {
-        return branch;
-    }
-
-    public void setBranch(Branch branch) {
-        this.branch = branch;
+    public void setStore(Branch store) {
+        this.store = store;
     }
 }
