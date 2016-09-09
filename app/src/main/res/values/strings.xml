@@ -3,6 +3,7 @@
     <string name="login_url">http://cello.jamwide.com/webserv/api/login</string>
     <string name="title_activity_activitylogin">Sign in</string>
     <string name="Search">Search</string>
+    <string name="branch_reorder">Reorder branch by</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>

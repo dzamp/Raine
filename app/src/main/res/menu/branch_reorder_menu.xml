@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <item
+        android:id="@+id/reorder"
+        android:icon="@android:drawable/ic_menu_sort_by_size"
+        android:title="@string/branch_reorder"
+        app:showAsAction="always">
+
+        <menu>
+
+
+            <item
+                android:id="@+id/submenu_sort_low_to_high"
+                android:title="Price Low->High"
+                app:showAsAction="always" />
+
+            <item
+                android:id="@+id/submenu_sort_high_to_low"
+                android:title="Price High->Low"
+                app:showAsAction="always" />
+
+            <item
+                android:id="@+id/submenu_sort_by_proximity"
+                android:title="Proximity"
+                app:showAsAction="always" />
+        </menu>
+    </item>
+
+
+</menu>

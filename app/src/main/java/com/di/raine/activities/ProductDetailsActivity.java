@@ -1,21 +1,34 @@
 package com.di.raine.activities;
 
+import android.Manifest;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -36,16 +49,43 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class ProductDetailsActivity extends AppCompatActivity {
     private final static String TAG = ProductDetailsActivity.class.toString();
     private TextView descriptionInfo = null;
-    private ArrayList<Branch> branches = new ArrayList<>();
+    private ArrayList<Pair<Branch, String>> branches = new ArrayList<>(); //Pair of branches and their prices on this product
     private NetworkService networkService;
     private boolean mBound = false;
+    private Menu menu;
     private Product product = null;
-    private ListView gridview = null;
+    private LocationManager mLocationManager;
+    private Location currentLocation;
+    private ListView gridview;
+
+    private LocationListener mLocationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+            currentLocation = location;
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+            Log.d(TAG, "OnStatusChanged");
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+            Log.d(TAG, "onProviderEnabled");
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+            Log.d(TAG, "onProviderDisabled");
+        }
+    };
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName className,
@@ -63,12 +103,28 @@ public class ProductDetailsActivity extends AppCompatActivity {
                         JSONObject JsonResponse = new JSONObject(response);
                         JsonBranch = JsonResponse.getJSONArray("data").getJSONObject(0).getJSONObject("branch");
                         branch = new Gson().fromJson(JsonBranch.toString(), Branch.class);
-                        branches.add(branch);
-                        branches.add(branch);
-                        branches.add(new Branch("yolo", "5", new Locality("athens", "1221", "Stournari 12", new Point(31.3123, 43.3233))));
-                        branches.add(new Branch("dadwa", "5", new Locality("athadwdawens", "1221", "Stournari 12", new Point(31.3123, 43.3233))));
-                        gridview = (ListView) findViewById(R.id.listBranch_alt);
+                        String price = JsonResponse.getJSONArray("data").getJSONObject(0).getString("price");
+                        branches.add(new Pair(branch, price));
+
+//                        branches.add(branch);
+//                        branches.add(new Pair(new Branch("Plaisio Suntagma", "5", new Locality("Plaisio", "1221", "Suntagma 12", new Point(37.983810, 23.727539))), "3324"));
+                        branches.add(new Pair(new Branch("Plaisio Stournari", "5", new Locality("Plaisio", "1221", "Stournari 12", new Point(36.987224, 23.731401))), "3323"));
+                        branches.add(new Pair(new Branch("Plaisio Patra", "5", new Locality("Plaisio", "1221", "Peristeri 12", new Point(38.246117, 21.731296))), "34523"));
+                        branches.add(new Pair(new Branch("Best Buy", "5", new Locality("Plaisio", "1221", "Peristeri 12", new Point(38.246640, 21.734574))), "34523"));
+
                         gridview.setAdapter(new ProductDetailsActivity.BranchesAdapter(getApplicationContext(), branches));
+
+                        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                Uri gmmIntentUri = Uri.parse("google.streetview:cbll=" + Double.toString(branches.get(position).first.getLocality().getPoint().getLatitude())
+                                        + "," + Double.toString(branches.get(position).first.getLocality().getPoint().getLongitude()));
+                                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                                mapIntent.setPackage("com.google.android.apps.maps");
+                                startActivity(mapIntent);
+                            }
+                        });
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -80,6 +136,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
                 }
             });
 
+
         }
 
         @Override
@@ -88,6 +145,34 @@ public class ProductDetailsActivity extends AppCompatActivity {
         }
     };
 
+    private void requestImmediateLocation() {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        // Create a criteria object to retrieve provider
+        Criteria criteria = new Criteria();
+//        criteria.setAccuracy(Criteria.NO_REQUIREMENT);
+        // Get the name of the best provider
+        String provider = locationManager.getBestProvider(criteria, true);
+
+        // Get Current Location
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        currentLocation = mLocationManager.getLastKnownLocation(provider);
+
+        //latitude of location
+        double myLatitude = currentLocation.getLatitude();
+
+        //longitude og location
+        double myLongitude = currentLocation.getLongitude();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +194,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
         TextView textView = (TextView) findViewById(R.id.product_label);
         textView.setText(product.getName());
-
+        gridview = (ListView) findViewById(R.id.listBranch_alt);
         Intent in = new Intent(this, NetworkService.class);
         bindService(in, mConnection, Context.BIND_AUTO_CREATE);
 
@@ -120,6 +205,22 @@ public class ProductDetailsActivity extends AppCompatActivity {
         image.setImageResource((intent.getIntExtra("productImage", 0)));
         descriptionInfo = (TextView) findViewById(R.id.product_description_text);
         descriptionInfo.setVisibility(View.GONE);
+
+        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100,
+                10, mLocationListener);
+
     }
 
 
@@ -131,7 +232,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         Intent intent = new Intent(this, NetworkService.class);
-        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+//        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 
     }
 
@@ -145,18 +246,95 @@ public class ProductDetailsActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        this.menu = menu;
+        getMenuInflater().inflate(R.menu.branch_reorder_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        ProductDetailsActivity.BranchesAdapter adapter = new ProductDetailsActivity.BranchesAdapter(getApplicationContext(), branches);
+        switch (item.getItemId()) {
+            case R.id.submenu_sort_high_to_low:
+                Toast.makeText(getApplicationContext(), "hello", Toast.LENGTH_SHORT).show();
+                sortBranchByPriceHighLow(branches);
+                gridview.setAdapter(adapter);
+                break;
+            case R.id.submenu_sort_low_to_high:
+                sortBranchByPriceLowHigh(branches);
+                gridview.setAdapter(adapter);
+                break;
+            case R.id.submenu_sort_by_proximity:
+                sortBranchByProximity(branches);
+                gridview.setAdapter(adapter);
+                // FIXME: 2/9/2016
+                break;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+//        return super.onContextItemSelected(item);
+        return true;
+    }
+
+    public void sortBranchByPriceLowHigh(ArrayList<Pair<Branch, String>> list) {
+        Collections.sort(list, new Comparator<Pair<Branch, String>>() {
+            @Override
+            public int compare(Pair<Branch, String> o1, Pair<Branch, String> o2) {
+                float num1 = Float.parseFloat(o1.second);
+                float num2 = Float.parseFloat(o2.second);
+                return (int) (num1 - num2);
+            }
+        });
+    }
+
+    public void sortBranchByPriceHighLow(ArrayList<Pair<Branch, String>> list) {
+        Collections.sort(list, new Comparator<Pair<Branch, String>>() {
+            @Override
+            public int compare(Pair<Branch, String> o1, Pair<Branch, String> o2) {
+                float num1 = Float.parseFloat(o1.second);
+                float num2 = Float.parseFloat(o2.second);
+                return (int) (num2 - num1);
+            }
+        });
+    }
+
+    public void sortBranchByProximity(ArrayList<Pair<Branch, String>> list) {
+        requestImmediateLocation();
+        Collections.sort(list, new Comparator<Pair<Branch, String>>() {
+            @Override
+            public int compare(Pair<Branch, String> o1, Pair<Branch, String> o2) {
+                double currentLat = currentLocation.getLatitude();
+                double currentLong = currentLocation.getLongitude();
+                double distrance1 = Math.abs((currentLat + currentLong)
+                        - (o1.first.getLocality().getPoint().getLatitude() + o1.first.getLocality().getPoint().getLongitude()));
+                double distrance2 = Math.abs((currentLat + currentLong)
+                        - (o2.first.getLocality().getPoint().getLatitude() + o2.first.getLocality().getPoint().getLongitude()));
+
+                //The absolute distance of the current position minus the first point needs to be smaller
+                // than the absolute distance of the current position minus the second point
+                if (Math.abs((currentLat + currentLong)
+                        - (o1.first.getLocality().getPoint().getLatitude() + o1.first.getLocality().getPoint().getLongitude()))
+                        < Math.abs((currentLat + currentLong)
+                        - (o2.first.getLocality().getPoint().getLatitude() + o2.first.getLocality().getPoint().getLongitude()))) {
+                    return -1;
+                } else return 1;
+
+            }
+        });
+    }
 
 
-
-
-    private class BranchesAdapter extends ArrayAdapter<Branch> {
+    private class BranchesAdapter extends ArrayAdapter<Pair<Branch, String>> {
         private static final int PADDING = 8;
         private static final int WIDTH = 200;
         private static final int HEIGHT = 200;
         private Context mContext;
-        private List<Branch> branches;
+        private List<Pair<Branch, String>> branches;
 
-        public BranchesAdapter(Context mContext, List<Branch> mThumbIds) {
+        public BranchesAdapter(Context mContext, List<Pair<Branch, String>> mThumbIds) {
             super(mContext, R.layout.branch_list_item, mThumbIds);
             this.mContext = mContext;
             this.branches = mThumbIds;
@@ -175,10 +353,12 @@ public class ProductDetailsActivity extends AppCompatActivity {
                 grid = new View(mContext);
                 grid = inflater.inflate(R.layout.branch_list_item, null);
                 TextView textView = (TextView) grid.findViewById(R.id.branch_text);
-                Log.d(TAG, String.valueOf(position));
-                textView.setText(branches.get(position).getName() + ", " + branches.get(position).getLocality().getAddress() + ", "
-                        + branches.get(position).getLocality().getCity());
+                textView.setText(branches.get(position).first.getName() + ", " + branches.get(position).first.getLocality().getAddress() + ", "
+                        + branches.get(position).first.getLocality().getCity());
                 textView.setTextColor(Color.BLACK);
+                TextView priceView = (TextView) grid.findViewById(R.id.branch_price);
+                priceView.setText(branches.get(position).second + " €");
+                priceView.setTextColor(Color.BLACK);
             } else {
                 grid = (View) convertView;
             }

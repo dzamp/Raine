@@ -20,9 +20,9 @@
 
 
     <style name="ListView" parent="@android:style/Widget.ListView">
-        <item name="android:background">@color/light_grey</item>
-        <item name="android:cacheColorHint">@android:color/background_light</item>
-        <item name="android:divider">@android:color/background_dark</item>
+        <item name="android:background">@color/branch_background</item>
+        <item name="android:cacheColorHint">@android:color/transparent</item>
+        <item name="android:divider">@color/branch_divider</item>
         <item name="android:dividerHeight">3dp</item>
     </style>
 </resources>

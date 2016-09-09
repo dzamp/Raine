@@ -7,5 +7,7 @@
     <color name="white">#ffffff</color>
     <color name="beige">#ffffcc</color>
     <color name="light_grey">#cccccc</color>
-    <color name="mycolor">#9bc8e2</color>
+    <color name="mycolor">#57d7c6</color>
+    <color name="branch_divider">#4d6864</color>
+    <color name="branch_background">#d5e8fc</color>
 </resources>
