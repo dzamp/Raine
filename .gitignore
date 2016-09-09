@@ -1,9 +1,13 @@
 # Built application files
 /*/build/
 
+.idea/runConfigurations.xml
+gradle/wrapper/gradle-wrapper.properties
+
 # Crashlytics configuations
 com_crashlytics_export_strings.xml
 
+build/generated/mockable-android-*
 
 build/intermediates/
 
@@ -18,6 +22,7 @@ local.properties
 
 # User-specific configurations
 .idea/libraries/
+.idea/gradle.xml
 .idea/workspace.xml
 .idea/tasks.xml
 .idea/.name

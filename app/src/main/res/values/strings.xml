@@ -20,4 +20,13 @@
         completions."
     </string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="review_prompt">Choose a rating</string>
+
+    <string-array name="review_array">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
 </resources>

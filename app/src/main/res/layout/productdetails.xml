@@ -9,7 +9,7 @@
         <ImageView android:layout_width="180dp"
             android:layout_height="180dp" android:id="@+id/ImageViewProduct"
             android:adjustViewBounds="true" android:scaleType="fitXY"
-            android:src="@drawable/deadoralive" android:layout_margin="5dip"
+            android:src="@drawable/camera" android:layout_margin="5dip"
             android:layout_weight="5.47"></ImageView>
         <TextView android:layout_width="wrap_content"
             android:layout_height="wrap_content" android:id="@+id/TextViewProductTitle"
