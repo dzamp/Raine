@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:fillViewport="true"
+    android:orientation="vertical">
+
+    <LinearLayout android:layout_width="wrap_content"
+        android:layout_height="wrap_content" android:id="@+id/LinearLayoutHeader"
+        android:orientation="horizontal">
+
+        <ImageView android:layout_width="180dp"
+            android:layout_height="180dp" android:id="@+id/productDetailImage"
+            android:adjustViewBounds="true" android:scaleType="fitXY"
+            android:src="@drawable/camera" android:layout_margin="5dip"></ImageView>
+
+        <LinearLayout android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:id="@+id/LinearLayoutProduct"
+            android:orientation="vertical">
+
+            <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/TextViewProductTitle"
+                android:layout_gravity="top" android:layout_margin="5dip"
+                android:textSize="26dip" android:text="Product Title"
+                android:textColor="#000000"></TextView>
+
+            <TextView android:layout_height="wrap_content" android:id="@+id/TextViewProductPrice"
+                android:layout_width="fill_parent" android:layout_margin="5dip"
+                android:textColor="#000000" android:text="Product Price" android:textStyle="bold"></TextView>
+
+        </LinearLayout>
+
+    </LinearLayout>
+    <!--content to hide/show -->
+    <TextView   android:id="@+id/product_description_text"
+        android:text="Info aboout product"
+        android:typeface="sans"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@android:color/darker_gray" />
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.MapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+
+    <Button android:layout_width="wrap_content"
+        android:layout_height="wrap_content" android:layout_margin="5dip"
+        android:layout_gravity="right" android:id="@+id/ButtonAddToCart"
+        android:text="Add to Cart"></Button>
+
+</LinearLayout>
