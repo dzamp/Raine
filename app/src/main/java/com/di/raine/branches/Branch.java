@@ -5,9 +5,10 @@ package com.di.raine.branches;
  */
 
 public class Branch {
-    private String name;
-    private String id;
-    private Locality locality;
+    public String name;
+    public String id;
+    public  Locality locality;
+    public boolean selected;
 
     public Branch() {
     }
@@ -40,6 +41,14 @@ public class Branch {
 
     public void setLocality(Locality locality) {
         this.locality = locality;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 
 
