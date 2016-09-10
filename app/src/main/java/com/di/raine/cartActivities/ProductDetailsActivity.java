@@ -17,10 +17,26 @@ import com.di.raine.R;
 import com.di.raine.cartHelper.ShoppingCartHelper;
 import com.di.raine.products.CartProduct;
 
-public class ProductDetailsActivity extends Activity {
+import android.support.v4.app.FragmentActivity;
+import android.os.Bundle;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+
+public class ProductDetailsActivity extends FragmentActivity implements OnMapReadyCallback {
+
+    private GoogleMap mMap;
+    private CartProduct selectedProduct;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.productdetails);
@@ -29,7 +45,7 @@ public class ProductDetailsActivity extends Activity {
         final List<CartProduct> cart = ShoppingCartHelper.getCart();
 
         int productIndex = getIntent().getExtras().getInt(ShoppingCartHelper.PRODUCT_INDEX);
-        final CartProduct selectedProduct = catalog.get(productIndex);
+        selectedProduct = catalog.get(productIndex);
 
         // Set the proper image and text
         ImageView productImageView = (ImageView) findViewById(R.id.ImageViewProduct);
@@ -63,6 +79,25 @@ public class ProductDetailsActivity extends Activity {
             addToCartButton.setEnabled(false);
             addToCartButton.setText("Item in Cart");
         }
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
     }
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+        // Add a marker in Sydney and move the camera
+        //LatLng sydney = new LatLng(-34, 151);
+        LatLng shopLatLong = new LatLng(
+                selectedProduct.getStore().getLocality().getPoint().getLatitude(), selectedProduct.getStore().getLocality().getPoint().getLongitude());
+        mMap.addMarker(new MarkerOptions().position(shopLatLong).title("Shop"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(shopLatLong));
+
+        CameraPosition cameraPosition = new CameraPosition.Builder().target(shopLatLong).zoom(17.0f).build();
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
+        mMap.moveCamera(cameraUpdate);
+    }
 }

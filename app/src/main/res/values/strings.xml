@@ -29,4 +29,6 @@
         <item>4</item>
         <item>5</item>
     </string-array>
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyC8pcMvkOuIVBG9nxxU_Sn_dLwduvfBubg</string>
+
 </resources>
