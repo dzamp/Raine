@@ -142,7 +142,6 @@ public class ProductsActivity extends AppCompatActivity {
         super.onStop();
         // Unbind from the service
         if (mBound) {
-            networkService.sendLogoutRequest();
             unbindService(mConnection);
             mBound = false;
         }

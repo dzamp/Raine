@@ -214,7 +214,6 @@ public class GridView_Products extends AppCompatActivity /*implements SearchView
         super.onStop();
         // Unbind from the service
         if (mBound) {
-            networkService.sendLogoutRequest();
             unbindService(mConnection);
             mBound = false;
         }

@@ -123,6 +123,24 @@ public class ProductDetailsActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                     gridview.setAdapter(new ProductDetailsActivity.BranchesAdapter(getApplicationContext(), branches));
+                    gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                               /* Uri gmmIntentUri = Uri.parse("google.streetview:cbll=" + Double.toString(branches.get(position).first.getLocality().getPoint().getLatitude())
+                                        + "," + Double.toString(branches.get(position).first.getLocality().getPoint().getLongitude()));
+                                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                                mapIntent.setPackage("com.google.android.apps.maps");*/
+
+                            CartProduct cartProduct = new CartProduct(product.getName(), ContextCompat.getDrawable(getApplicationContext(),
+                                    productImage),product.getDescription(), Double.valueOf(branches.get(position).second), branches.get(position).first);
+                            List<CartProduct> cartProducts = ShoppingCartHelper.getCatalog(getApplicationContext());
+                            cartProducts.add(cartProduct);
+                            Intent productDetailsIntent = new Intent(getBaseContext(), com.di.raine.cartActivities.ProductDetailsActivity.class);
+                            productDetailsIntent.putExtra(ShoppingCartHelper.PRODUCT_INDEX, 0);
+                            startActivity(productDetailsIntent);
+
+                        }
+                    });
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -133,24 +151,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
 
 
-            gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                               /* Uri gmmIntentUri = Uri.parse("google.streetview:cbll=" + Double.toString(branches.get(position).first.getLocality().getPoint().getLatitude())
-                                        + "," + Double.toString(branches.get(position).first.getLocality().getPoint().getLongitude()));
-                                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                                mapIntent.setPackage("com.google.android.apps.maps");*/
 
-                                CartProduct cartProduct = new CartProduct(product.getName(), ContextCompat.getDrawable(getApplicationContext(),
-                                        productImage),product.getDescription(), Double.valueOf(branches.get(position).second), branches.get(position).first);
-                                List<CartProduct> cartProducts = ShoppingCartHelper.getCatalog(getApplicationContext());
-                                cartProducts.add(cartProduct);
-                                Intent productDetailsIntent = new Intent(getBaseContext(), com.di.raine.cartActivities.ProductDetailsActivity.class);
-                                productDetailsIntent.putExtra(ShoppingCartHelper.PRODUCT_INDEX, 0);
-                                startActivity(productDetailsIntent);
-
-                }
-            });
 
         }
 
@@ -256,7 +257,6 @@ public class ProductDetailsActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         if (mBound) {
-            networkService.sendLogoutRequest();
             unbindService(mConnection);
             mBound = false;
         }

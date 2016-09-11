@@ -98,7 +98,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onStop();
         // Unbind from the service
         if (mBound) {
-            networkService.sendLogoutRequest();
             unbindService(mConnection);
             mBound = false;
         }
