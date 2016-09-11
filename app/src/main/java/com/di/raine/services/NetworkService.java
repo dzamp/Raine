@@ -17,6 +17,8 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.di.raine.services.auth.LoginService;
 import com.di.raine.services.auth.LogoutService;
+import com.di.raine.services.comments.PostComment;
+import com.di.raine.services.comments.RequestComments;
 import com.di.raine.services.product.requests.RequestCategories;
 import com.di.raine.services.product.requests.RequestSpecificCategory;
 import com.di.raine.services.product.requests.RequestSpecificProductBranches;
@@ -24,6 +26,11 @@ import com.di.raine.services.product.requests.SearchRequest;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLEncoder;
 
 public class NetworkService extends Service {
     private final static String TAG = "NetworkService";
@@ -33,6 +40,7 @@ public class NetworkService extends Service {
     public boolean loggedIn = false;
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
+    private String username, password;
 
     @Override
     public void onCreate() {
@@ -82,6 +90,8 @@ public class NetworkService extends Service {
 
     public void sendLoginRequest(String username, String password,
                                  Response.Listener successListener, Response.ErrorListener errorListener) {
+        this.password = password;
+        this.username = username;
         LoginService loginService = new LoginService();
         StringRequest req = loginService.attemptLogin(username, password, successListener, errorListener);
         getRequestQueue().add(req);
@@ -115,6 +125,29 @@ public class NetworkService extends Service {
     public void requestProductBranches (String id, Response.Listener<String> listener, Response.ErrorListener onErrorListener){
         RequestSpecificProductBranches requestSpecificProductBranches= new RequestSpecificProductBranches(id,listener,onErrorListener);
         getRequestQueue().add(requestSpecificProductBranches);
+    }
+
+    public void requestComments ( String branchid, Response.Listener<String> listener, Response.ErrorListener errorListener ){
+        getRequestQueue().add(new RequestComments(branchid,listener,errorListener));
+    }
+
+    public void postComment(String branchId, String comment, int rating,  Response.Listener<String> listener, Response.ErrorListener errorListener){
+        comment= comment.replaceAll(" ","%20");
+
+
+        URI url  = null;
+        try {
+            url =  new URI( Endpoint.endpoint+ "/webserv/api/v0/comment/add"+"?branch="+branchId +"&text="+comment+"&rating="+rating );
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
+
+        try {
+            getRequestQueue().add(new PostComment(url,branchId,comment,rating, listener,errorListener));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
 
     public class NetworkBinder extends Binder {

@@ -3,6 +3,7 @@ package com.di.raine.services.product.requests;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.di.raine.services.Endpoint;
 
 import org.json.JSONArray;
 
@@ -15,7 +16,8 @@ import java.util.Map;
 
 public final class RequestCategories extends JsonArrayRequest {
 
-    private final static String requestCategoriesEndpoint = "http://cello.jamwide.com/webserv/api/v0/category/list";
+
+    private final static String requestCategoriesEndpoint =  Endpoint.endpoint + "/webserv/api/v0/category/list";
 
     public RequestCategories( Response.Listener<JSONArray> listener, Response.ErrorListener errorListener) {
         super(requestCategoriesEndpoint, listener, errorListener);

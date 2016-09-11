@@ -3,6 +3,7 @@ package com.di.raine.services.product.requests;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
+import com.di.raine.services.Endpoint;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,11 +14,11 @@ import java.util.Map;
 
 public class RequestSpecificCategory extends StringRequest {
     int id ;
-    private static final String requestCategoryEndpoint = "http://cello.jamwide.com/webserv/api/v0/product/list?category=";
+    private static final String requestCategoryEndpoint =     Endpoint.endpoint + "/webserv/api/v0/product/list?category=";
     private Map<String, String> mParams= new HashMap<>();
 
     public RequestSpecificCategory(int id, Response.Listener<String> listener, Response.ErrorListener errorListener) {
-        super( "http://cello.jamwide.com/webserv/api/v0/product/list?category=" + id,  listener, errorListener);
+        super( requestCategoryEndpoint + id,  listener, errorListener);
         this.id = id;
         mParams.put("category",Integer.toString(id));
     }
