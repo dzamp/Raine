@@ -28,6 +28,7 @@ import com.di.raine.R;
 import com.di.raine.adapters.ProductAdapter;
 import com.di.raine.adapters.ReviewAdapter;
 import com.di.raine.branches.Comment;
+import com.di.raine.cartHelper.NonScrollListView;
 import com.di.raine.cartHelper.ShoppingCartHelper;
 import com.di.raine.products.CartProduct;
 
@@ -61,6 +62,7 @@ public class ProductDetailsActivity extends FragmentActivity implements OnMapRea
     boolean mBound = false;
     private NetworkService networkService;
     private ReviewAdapter rReviewAdapter;
+    private String shopId;
     List<Comment> comments;
     private ServiceConnection mConnection = new ServiceConnection()
 
@@ -74,7 +76,7 @@ public class ProductDetailsActivity extends FragmentActivity implements OnMapRea
             networkService = binder.getService();
             mBound = true;
 
-            networkService.requestComments("1"/*branch stringid*/, new Response.Listener<String>() {
+            networkService.requestComments(shopId/*branch stringid*/, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     JSONObject JsonResponse = null;
@@ -92,7 +94,7 @@ public class ProductDetailsActivity extends FragmentActivity implements OnMapRea
                         e.printStackTrace();
                     }
                    /* Set adapter and click listeners*/
-                    final ListView listViewReviews = (ListView) findViewById(R.id.ListViewReviewsItems);
+                    NonScrollListView listViewReviews = (NonScrollListView) findViewById(R.id.ListViewReviewsItems);
                     rReviewAdapter = new ReviewAdapter(comments, getLayoutInflater());
                     listViewReviews.setAdapter( rReviewAdapter);
                 }
@@ -129,7 +131,7 @@ public class ProductDetailsActivity extends FragmentActivity implements OnMapRea
 
         int productIndex = getIntent().getExtras().getInt(ShoppingCartHelper.PRODUCT_INDEX);
         selectedProduct = catalog.get(productIndex);
-
+        shopId = selectedProduct.getStore().getId();
         // Set the proper image and text
         ImageView productImageView = (ImageView) findViewById(R.id.ImageViewProduct);
         productImageView.setImageDrawable(selectedProduct.productImage);

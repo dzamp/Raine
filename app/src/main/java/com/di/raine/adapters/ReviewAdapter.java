@@ -60,7 +60,7 @@ public class ReviewAdapter extends BaseAdapter {
 
         Comment curComment = rReviewsList.get(position);
         comment.commentText.setText(curComment.getTextMessage());
-        //comment.commentGrade.setText(curComment.getRating());
+        comment.commentGrade.setText(String.valueOf(curComment.getRating()));
 
         return convertView;
     }

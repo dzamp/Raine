@@ -17,7 +17,7 @@
         android:textStyle="bold"></TextView>
 
     <TextView android:id="@+id/TextViewReviewStatic" android:layout_width="wrap_content"
-        android:layout_height="46dp" android:layout_weight="0.00" android:text="5"
+        android:layout_height="46dp" android:layout_weight="0.00" android:text="/5"
         android:layout_marginTop="15dp"
         android:layout_marginRight="15dp"
         android:layout_marginLeft="0dp"
