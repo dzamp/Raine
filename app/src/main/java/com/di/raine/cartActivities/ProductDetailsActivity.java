@@ -19,11 +19,14 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.di.raine.R;
+import com.di.raine.adapters.ProductAdapter;
+import com.di.raine.adapters.ReviewAdapter;
 import com.di.raine.branches.Comment;
 import com.di.raine.cartHelper.ShoppingCartHelper;
 import com.di.raine.products.CartProduct;
@@ -57,7 +60,11 @@ public class ProductDetailsActivity extends FragmentActivity implements OnMapRea
     private CartProduct selectedProduct;
     boolean mBound = false;
     private NetworkService networkService;
-    private ServiceConnection mConnection = new ServiceConnection() {
+    private ReviewAdapter rReviewAdapter;
+    List<Comment> comments;
+    private ServiceConnection mConnection = new ServiceConnection()
+
+    {
 
         @Override
         public void onServiceConnected(ComponentName className,
@@ -67,14 +74,14 @@ public class ProductDetailsActivity extends FragmentActivity implements OnMapRea
             networkService = binder.getService();
             mBound = true;
 
-            networkService.requestComments("10"/*branch stringid*/, new Response.Listener<String>() {
+            networkService.requestComments("1"/*branch stringid*/, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     JSONObject JsonResponse = null;
                     try {
                         JsonResponse = new JSONObject(response);
                         JSONArray jsonComments = JsonResponse.getJSONArray("data");
-                        List<Comment> comments = new ArrayList<Comment>();
+                        comments = new ArrayList<Comment>();
                         for (int i = 0; i < jsonComments.length(); i++) {
                             JSONObject jsonComment = jsonComments.getJSONObject(i);
                             Comment comm = new Gson().fromJson(jsonComment.toString(), Comment.class);
@@ -85,6 +92,9 @@ public class ProductDetailsActivity extends FragmentActivity implements OnMapRea
                         e.printStackTrace();
                     }
                    /* Set adapter and click listeners*/
+                    final ListView listViewReviews = (ListView) findViewById(R.id.ListViewReviewsItems);
+                    rReviewAdapter = new ReviewAdapter(comments, getLayoutInflater());
+                    listViewReviews.setAdapter( rReviewAdapter);
                 }
             }, new Response.ErrorListener() {
                 @Override

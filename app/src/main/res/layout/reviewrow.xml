@@ -8,7 +8,7 @@
         android:textSize="20dip" android:text="Review" android:textColor="#000000"
         android:minLines="2" android:maxWidth="150dip"
         android:layout_weight="0.04"></TextView>
-    <TextView android:id="@+id/TextViewreviewGrade" android:layout_width="wrap_content"
+    <TextView android:id="@+id/TextViewForReviewGrade" android:layout_width="wrap_content"
         android:layout_height="46dp" android:layout_weight="0.00" android:text="5"
         android:layout_marginRight="0dp"
         android:layout_marginTop="15dp"

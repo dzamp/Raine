@@ -52,7 +52,7 @@ public class ReviewAdapter extends BaseAdapter {
 
             comment.commentText = (TextView) convertView.findViewById(R.id.TextViewReviewText);
 
-            comment.commentGrade = (TextView) convertView.findViewById(R.id.TextViewreviewGrade);
+            comment.commentGrade = (TextView) convertView.findViewById(R.id.TextViewForReviewGrade);
 
             convertView.setTag(comment);
         } else {
@@ -61,7 +61,7 @@ public class ReviewAdapter extends BaseAdapter {
 
         Comment curComment = rReviewsList.get(position);
         comment.commentText.setText(curComment.getTextMessage());
-        comment.commentGrade.setText(curComment.getRating());
+        //comment.commentGrade.setText(curComment.getRating());
 
         return convertView;
     }
