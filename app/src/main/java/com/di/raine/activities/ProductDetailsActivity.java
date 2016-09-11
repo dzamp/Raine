@@ -30,10 +30,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.NetworkResponse;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.di.raine.R;
 import com.di.raine.branches.Branch;
+import com.di.raine.branches.Comment;
 import com.di.raine.branches.Locality;
 import com.di.raine.branches.Point;
 import com.di.raine.cartHelper.ShoppingCartHelper;
@@ -47,9 +51,11 @@ import com.di.raine.products.Television;
 import com.di.raine.services.NetworkService;
 import com.google.gson.Gson;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -104,22 +110,32 @@ public class ProductDetailsActivity extends AppCompatActivity {
                     Branch branch = null;
                     try {
                         JSONObject JsonResponse = new JSONObject(response);
-                        JsonBranch = JsonResponse.getJSONArray("data").getJSONObject(0).getJSONObject("branch");
-                        branch = new Gson().fromJson(JsonBranch.toString(), Branch.class);
-                        String price = JsonResponse.getJSONArray("data").getJSONObject(0).getString("price");
-                        branches.add(new Pair(branch, price));
+                        // FIXME: 11/9/2016
 
-//                        branches.add(branch);
-//                        branches.add(new Pair(new Branch("Plaisio Suntagma", "5", new Locality("Plaisio", "1221", "Suntagma 12", new Point(37.983810, 23.727539))), "3324"));
-                        branches.add(new Pair(new Branch("Plaisio Stournari", "5", new Locality("Plaisio", "1221", "Stournari 12", new Point(36.987224, 23.731401))), "3323"));
-                        branches.add(new Pair(new Branch("Plaisio Patra", "5", new Locality("Plaisio", "1221", "Peristeri 12", new Point(38.246117, 21.731296))), "34523"));
-                        branches.add(new Pair(new Branch("Best Buy", "5", new Locality("Plaisio", "1221", "Peristeri 12", new Point(38.246640, 21.734574))), "34523"));
+                        JSONArray jsonBranches  = JsonResponse.getJSONArray("data");
+                        for (int i=0;i<jsonBranches.length();i++) {
+                            JsonBranch = jsonBranches.getJSONObject(i).getJSONObject("branch");
+                            branch = new Gson().fromJson(JsonBranch.toString(), Branch.class);
+                            String price = JsonResponse.getJSONArray("data").getJSONObject(i).getString("price");
+                            branches.add(new Pair(branch, price));
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    gridview.setAdapter(new ProductDetailsActivity.BranchesAdapter(getApplicationContext(), branches));
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.d(TAG, "Error in fetching branches of product");
+                }
+            });
 
-                        gridview.setAdapter(new ProductDetailsActivity.BranchesAdapter(getApplicationContext(), branches));
 
-                        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                /* Uri gmmIntentUri = Uri.parse("google.streetview:cbll=" + Double.toString(branches.get(position).first.getLocality().getPoint().getLatitude())
                                         + "," + Double.toString(branches.get(position).first.getLocality().getPoint().getLongitude()));
                                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
@@ -132,20 +148,9 @@ public class ProductDetailsActivity extends AppCompatActivity {
                                 Intent productDetailsIntent = new Intent(getBaseContext(), com.di.raine.cartActivities.ProductDetailsActivity.class);
                                 productDetailsIntent.putExtra(ShoppingCartHelper.PRODUCT_INDEX, 0);
                                 startActivity(productDetailsIntent);
-                            }
-                        });
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.d(TAG, "Error in fetching branches of product");
                 }
             });
-
 
         }
 

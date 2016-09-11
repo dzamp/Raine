@@ -4,6 +4,7 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
+import com.di.raine.services.Endpoint;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,8 +12,8 @@ import java.util.Map;
 
 public class LoginService {
 
-    private static final String url = "https://httpbin.org/get";
-    public static final String loginUrl = "http://cello.jamwide.com/webserv/api/login";
+
+    public static final String loginUrl =  Endpoint.endpoint + "/webserv/api/login";
     private String username;
     private String password;
 

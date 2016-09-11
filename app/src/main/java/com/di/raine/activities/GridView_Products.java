@@ -8,6 +8,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -93,6 +94,7 @@ public class GridView_Products extends AppCompatActivity /*implements SearchView
                         @Override
                         public void onResponse(String response) {
                             JSONArray obj = null;
+                            Log.d("POSITION","" +position);
                             ArrayList<Product> products = new ArrayList<>();
                             try {
                                 obj = (JSONArray) new JSONObject(response).get("data");

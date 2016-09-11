@@ -1,4 +1,4 @@
-package com.di.raine.services.product.requests;
+package com.di.raine.services.comments;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
@@ -9,21 +9,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by jim on 5/9/2016.
+ * Created by jim on 11/9/2016.
  */
 
-public class RequestSpecificProductBranches extends StringRequest {
-    private static final String requestBranchOfProductEndpoint = Endpoint.endpoint +"/webserv/api/v0/product/find?product=";
-    String id;
+public class RequestComments extends StringRequest{
+    private final static String requestComments = Endpoint.endpoint + "/webserv/api/v0/comment/forBranch?branch=";
     private Map<String, String> mParams = new HashMap<>();
+    public RequestComments(String branchId,   Response.Listener<String> listener, Response.ErrorListener errorListener) {
+        super(requestComments+branchId, listener, errorListener);
 
-    public RequestSpecificProductBranches(String id, Response.Listener<String> listener, Response.ErrorListener errorListener) {
-        super(requestBranchOfProductEndpoint + id, listener, errorListener);
-        this.id = id;
-        mParams.put("product", id);
     }
-
-    @Override
     public Map<String, String> getHeaders() throws AuthFailureError {
         Map<String, String> pars = new HashMap<String, String>();
         pars.put("Accept", "application/xhtml+xml");
