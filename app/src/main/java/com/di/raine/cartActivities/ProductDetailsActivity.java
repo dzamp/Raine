@@ -62,54 +62,7 @@ public class ProductDetailsActivity extends FragmentActivity implements OnMapRea
     private NetworkService networkService;
     private ReviewAdapter rReviewAdapter;
     List<Comment> comments;
-    private ServiceConnection mConnection = new ServiceConnection()
 
-    {
-
-        @Override
-        public void onServiceConnected(ComponentName className,
-                                       IBinder service) {
-            // We've bound to LocalService, cast the IBinder and get LocalService instance
-            NetworkService.NetworkBinder binder = (NetworkService.NetworkBinder) service;
-            networkService = binder.getService();
-            mBound = true;
-
-            networkService.requestComments("1"/*branch stringid*/, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    JSONObject JsonResponse = null;
-                    try {
-                        JsonResponse = new JSONObject(response);
-                        JSONArray jsonComments = JsonResponse.getJSONArray("data");
-                        comments = new ArrayList<Comment>();
-                        for (int i = 0; i < jsonComments.length(); i++) {
-                            JSONObject jsonComment = jsonComments.getJSONObject(i);
-                            Comment comm = new Gson().fromJson(jsonComment.toString(), Comment.class);
-                            comm.setBranchId(jsonComment.getJSONObject("branch").getInt("id"));
-                            comments.add(comm);
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                   /* Set adapter and click listeners*/
-                    final ListView listViewReviews = (ListView) findViewById(R.id.ListViewReviewsItems);
-                    rReviewAdapter = new ReviewAdapter(comments, getLayoutInflater());
-                    listViewReviews.setAdapter( rReviewAdapter);
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.d("ERROR", error.getMessage());
-                }
-            });
-
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-            mBound = false;
-        }
-    };
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -131,8 +84,8 @@ public class ProductDetailsActivity extends FragmentActivity implements OnMapRea
         selectedProduct = catalog.get(productIndex);
 
         // Set the proper image and text
-        ImageView productImageView = (ImageView) findViewById(R.id.ImageViewProduct);
-        productImageView.setImageDrawable(selectedProduct.productImage);
+//        ImageView productImageView = (ImageView) findViewById(R.id.ImageViewProduct);
+//        productImageView.setImageDrawable(selectedProduct.productImage);
         TextView productTitleTextView = (TextView) findViewById(R.id.TextViewProductTitle);
         productTitleTextView.setText(selectedProduct.title);
         TextView productDetailsTextView = (TextView) findViewById(R.id.TextViewProductDetails);
@@ -193,12 +146,21 @@ public class ProductDetailsActivity extends FragmentActivity implements OnMapRea
             addToCartButton.setText("Item in Cart");
         }
 
+        Button showComments = (Button) findViewById(R.id.buttonComments);
+        showComments.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), ListiViewComments.class);
+                i.putExtra(ShoppingCartHelper.PRODUCT_INDEX,selectedProduct.store.getId());
+
+                startActivity(i);
+            }
+        });
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+
     }
 
     @Override
@@ -216,43 +178,7 @@ public class ProductDetailsActivity extends FragmentActivity implements OnMapRea
         mMap.moveCamera(cameraUpdate);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();// ATTENTION: This was auto-generated to implement the App Indexing API.
-// See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        // Bind to LocalService
-        Intent intent = new Intent(this, NetworkService.class);
-        startService(intent);
-        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        AppIndex.AppIndexApi.start(client, getIndexApiAction());
-    }
 
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    public Action getIndexApiAction() {
-        Thing object = new Thing.Builder()
-                .setName("ProductDetails Page") // TODO: Define a title for the content shown.
-                // TODO: Make sure this auto-generated URL is correct.
-                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
-                .build();
-        return new Action.Builder(Action.TYPE_VIEW)
-                .setObject(object)
-                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
-                .build();
-    }
 
-    @Override
-    public void onStop() {
-        super.onStop();
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        AppIndex.AppIndexApi.end(client, getIndexApiAction());
-        client.disconnect();
-    }
 }

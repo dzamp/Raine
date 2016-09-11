@@ -53,21 +53,23 @@
             android:layout_height="fill_parent" android:layout_width="fill_parent"
             android:background="#ffffff" android:orientation="horizontal">
             <Button android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:layout_margin="5dip"
-                android:layout_gravity="right" android:id="@+id/ButtonGetDirections"
-                android:text="Get Directions"></Button>
+                android:layout_height="wrap_content" android:layout_margin="3dip"
+                android:layout_gravity="left" android:id="@+id/ButtonGetDirections"
+                android:text="Get Directions"
+                android:textSize="10dp"></Button>
             <Button android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:layout_margin="5dip"
+                android:layout_height="wrap_content" android:layout_margin="3dip"
                 android:id="@+id/ButtonStreetView"
                 android:text="Street View"
-                android:layout_gravity="right"></Button>
+                android:textSize="10dp"></Button>
+            <Button android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:layout_margin="3dip"
+                android:id="@+id/buttonComments"
+                android:text="View Comments"
+                android:layout_gravity="right"
+                android:textSize="10dp"></Button>
         </LinearLayout>
 
-        <ListView android:layout_height="wrap_content"
-            android:layout_weight="1" android:id="@+id/ListViewReviewsItems"
-            android:layout_width="fill_parent" android:background="#ffffff"
-            android:clickable="true" android:cacheColorHint="#ffffff">
-        </ListView>
 
         <Button android:layout_width="wrap_content"
             android:layout_height="wrap_content" android:layout_margin="5dip"
