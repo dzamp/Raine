@@ -51,7 +51,6 @@ public class ReviewAdapter extends BaseAdapter {
             comment = new ViewComment();
 
             comment.commentText = (TextView) convertView.findViewById(R.id.TextViewReviewText);
-
             comment.commentGrade = (TextView) convertView.findViewById(R.id.TextViewForReviewGrade);
 
             convertView.setTag(comment);
