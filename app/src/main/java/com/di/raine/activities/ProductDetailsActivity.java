@@ -136,7 +136,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
                             List<CartProduct> cartProducts = ShoppingCartHelper.getCatalog(getApplicationContext());
                             cartProducts.add(cartProduct);
                             Intent productDetailsIntent = new Intent(getBaseContext(), com.di.raine.cartActivities.ProductDetailsActivity.class);
-                            productDetailsIntent.putExtra(ShoppingCartHelper.PRODUCT_INDEX, 0);
+                            productDetailsIntent.putExtra(ShoppingCartHelper.PRODUCT_INDEX, cartProducts.lastIndexOf(cartProduct));
                             startActivity(productDetailsIntent);
 
 
