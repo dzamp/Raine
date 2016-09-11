@@ -23,7 +23,6 @@ public class SearchRequest extends StringRequest {
     public SearchRequest( String query , Response.Listener<String> listener, Response.ErrorListener errorListener) {
         super(Method.GET, searchEndpoint+query, listener, errorListener);
     }
-
-
+    
 
 }

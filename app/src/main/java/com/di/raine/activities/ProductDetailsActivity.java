@@ -139,6 +139,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
                             productDetailsIntent.putExtra(ShoppingCartHelper.PRODUCT_INDEX, 0);
                             startActivity(productDetailsIntent);
 
+
+
                         }
                     });
                 }

@@ -41,6 +41,7 @@ public class NetworkService extends Service {
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
     private String username, password;
+    private String sessionId;
 
     @Override
     public void onCreate() {
@@ -88,12 +89,12 @@ public class NetworkService extends Service {
         getRequestQueue().add(req);
     }
 
-    public void sendLoginRequest(String username, String password,
+    public void sendLoginRequest(Context ctx, String username, String password,
                                  Response.Listener successListener, Response.ErrorListener errorListener) {
         this.password = password;
         this.username = username;
         LoginService loginService = new LoginService();
-        StringRequest req = loginService.attemptLogin(username, password, successListener, errorListener);
+        StringRequest req = loginService.attemptLogin(ctx,username, password, successListener, errorListener);
         getRequestQueue().add(req);
     }
 
@@ -132,7 +133,7 @@ public class NetworkService extends Service {
     }
 
     public void postComment(String branchId, String comment, int rating,  Response.Listener<String> listener, Response.ErrorListener errorListener){
-        comment= comment.replaceAll(" ","%20");
+//        comment= comment.replaceAll(" ","%20");
 
 
         URI url  = null;
@@ -144,7 +145,7 @@ public class NetworkService extends Service {
 
 
         try {
-            getRequestQueue().add(new PostComment(url,branchId,comment,rating, listener,errorListener));
+            getRequestQueue().add(new PostComment(branchId,comment,rating, listener,errorListener));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
