@@ -72,32 +72,33 @@ public class Comment {
 
 
 
-                networkService.postComment(branches.get(position).first.getId(), "Raine", 5, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.d("SUCCESFUL COMMENT", response);
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        NetworkResponse response = error.networkResponse;
-                        if (error instanceof ServerError && response != null) {
-                            try {
-                                String res = new String(response.data,
-                                        HttpHeaderParser.parseCharset(response.headers, "utf-8"));
-                                // Now you can use any deserializer to make sense of data
-                                JSONObject obj = new JSONObject(res);
-                            } catch (UnsupportedEncodingException e1) {
-                                // Couldn't properly decode data to string
-                                e1.printStackTrace();
-                            } catch (JSONException e2) {
-                                // returned data is not JSONObject?
-                                e2.printStackTrace();
-                            }
-                        }
-                    }
-                });
+                    // FIXME: 11/9/2016
+                            networkService.postComment(branches.get(position).first.getId(), "Raine", 5, new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    Log.d("SUCCESFUL COMMENT", response);
 
+                                }
+                            }, new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    NetworkResponse response = error.networkResponse;
+                                    if (error instanceof ServerError && response != null) {
+                                        try {
+                                            String res = new String(response.data,
+                                                    HttpHeaderParser.parseCharset(response.headers, "utf-8"));
+                                            // Now you can use any deserializer to make sense of data
+                                            JSONObject obj = new JSONObject(res);
+                                        } catch (UnsupportedEncodingException e1) {
+                                            // Couldn't properly decode data to string
+                                            e1.printStackTrace();
+                                        } catch (JSONException e2) {
+                                            // returned data is not JSONObject?
+                                            e2.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
 */
 
 
