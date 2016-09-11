@@ -4,17 +4,21 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
-
+    <Button android:layout_width="wrap_content"
+        android:layout_height="75dp" android:layout_margin="5dip"
+        android:layout_gravity="right" android:id="@+id/ButtonViewCart"
+        android:text="View Shopping Cart"></Button>
 
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:columnWidth="150dp"
         android:gravity="center"
         android:horizontalSpacing="20dp"
         android:numColumns="auto_fit"
         android:stretchMode="columnWidth"
         android:verticalSpacing="20dp" />
+
 
 </LinearLayout>

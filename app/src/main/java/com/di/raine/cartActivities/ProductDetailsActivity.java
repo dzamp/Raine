@@ -6,6 +6,8 @@ package com.di.raine.cartActivities;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -62,6 +64,37 @@ public class ProductDetailsActivity extends FragmentActivity implements OnMapRea
         productShopTextView.setText(selectedProduct.getStore().getName());
 
 
+
+        Button getDirections = (Button) findViewById(R.id.ButtonGetDirections);
+        getDirections.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                        Uri.parse("http://maps.google.com/maps?saddr="+37.99000+","+23.73000+"&daddr="+ selectedProduct.getStore().getLocality().getPoint().getLatitude()+","+selectedProduct.getStore().getLocality().getPoint().getLongitude()));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.addCategory(Intent.CATEGORY_LAUNCHER );
+                intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
+                startActivity(intent);
+            }
+        });
+
+        Button streetView = (Button) findViewById(R.id.ButtonStreetView);
+        streetView.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                Uri gmmIntentUri = Uri.parse("google.streetview:cbll=" + Double.toString(selectedProduct.getStore().getLocality().getPoint().getLatitude())
+                        + "," + Double.toString(selectedProduct.getStore().getLocality().getPoint().getLongitude()));
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                mapIntent.setPackage("com.google.android.apps.maps");
+                startActivity(mapIntent);
+            }
+        });
+
+
         Button addToCartButton = (Button) findViewById(R.id.ButtonAddToCart);
         addToCartButton.setOnClickListener(new OnClickListener() {
 
@@ -74,7 +107,7 @@ public class ProductDetailsActivity extends FragmentActivity implements OnMapRea
             }
         });
 
-        // Disable the add to cart button if the item is already in the cart
+
         if(cart.contains(selectedProduct)) {
             addToCartButton.setEnabled(false);
             addToCartButton.setText("Item in Cart");
@@ -89,8 +122,7 @@ public class ProductDetailsActivity extends FragmentActivity implements OnMapRea
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-        //LatLng sydney = new LatLng(-34, 151);
+
         LatLng shopLatLong = new LatLng(
                 selectedProduct.getStore().getLocality().getPoint().getLatitude(), selectedProduct.getStore().getLocality().getPoint().getLongitude());
         mMap.addMarker(new MarkerOptions().position(shopLatLong).title("Shop"));

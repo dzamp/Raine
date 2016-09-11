@@ -91,8 +91,10 @@ public class ShoppingCartActivity extends Activity {
             @Override
             public void onClick(View v) {
 
+                mShopsForReview.clear();
+
                 for (int i = mCartList.size() - 1; i >= 0; i--) {
-                    if (!mShopsForReview.contains(mCartList.get(i).getStore())) {
+                    if (!mShopsForReview.contains(mCartList.get(i).getStore()) && !containsId(mCartList.get(i).getStore().getId())) {
                         mShopsForReview.add(mCartList.get(i).getStore());
                     }
                     mCartList.remove(i);
@@ -122,6 +124,15 @@ public class ShoppingCartActivity extends Activity {
 
         TextView productPriceTextView = (TextView) findViewById(R.id.TextViewSubtotal);
         productPriceTextView.setText("Subtotal: €" + subTotal);
+    }
+
+    public boolean containsId(String id) {
+        for(Branch shop : mShopsForReview) {
+            if(shop != null && shop.getId().equals(id)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

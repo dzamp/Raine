@@ -49,6 +49,20 @@
             android:layout_margin="10dp"
             android:layout_weight="5.78" />
 
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_height="fill_parent" android:layout_width="fill_parent"
+            android:background="#ffffff" android:orientation="horizontal">
+            <Button android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:layout_margin="5dip"
+                android:layout_gravity="right" android:id="@+id/ButtonGetDirections"
+                android:text="Get Directions"></Button>
+            <Button android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:layout_margin="5dip"
+                android:id="@+id/ButtonStreetView"
+                android:text="Street View"
+                android:layout_gravity="right"></Button>
+        </LinearLayout>
+
         <Button android:layout_width="wrap_content"
             android:layout_height="wrap_content" android:layout_margin="5dip"
             android:layout_gravity="right" android:id="@+id/ButtonAddToCart"

@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -28,6 +29,7 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.di.raine.R;
+import com.di.raine.cartActivities.ShoppingCartActivity;
 import com.di.raine.products.CelloResponse;
 import com.di.raine.products.Desktop;
 import com.di.raine.products.HomeCinema;
@@ -119,6 +121,16 @@ public class GridView_Products extends AppCompatActivity /*implements SearchView
                         }
                     });
                 }
+            }
+        });
+
+        Button viewShoppingCart = (Button) findViewById(R.id.ButtonViewCart);
+        viewShoppingCart.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent viewShoppingCartIntent = new Intent(getBaseContext(), ShoppingCartActivity.class);
+                startActivity(viewShoppingCartIntent);
             }
         });
 

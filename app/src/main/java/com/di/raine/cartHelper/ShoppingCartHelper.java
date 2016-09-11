@@ -21,6 +21,7 @@ import com.di.raine.products.CartProduct;
 public class ShoppingCartHelper {
 
     public static final String PRODUCT_INDEX = "PRODUCT_INDEX";
+    public static final String SHOP_INDEX = "SHOP_INDEX";
 
     private static List<CartProduct> catalog;
     private static List<CartProduct> cart;

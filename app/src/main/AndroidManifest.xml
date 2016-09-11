@@ -92,6 +92,7 @@
         <activity android:name="com.di.raine.cartActivities.ProductDetailsActivity"></activity>
         <activity android:name="com.di.raine.cartActivities.ShoppingCartActivity"></activity>
         <activity android:name="com.di.raine.cartActivities.CheckoutActivity"></activity>
+        <activity android:name="com.di.raine.cartActivities.ReviewActivity"></activity>
 
 
         <meta-data

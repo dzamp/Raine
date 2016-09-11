@@ -9,6 +9,8 @@ public class Branch {
     public String id;
     public  Locality locality;
     public boolean selected;
+    public boolean reviewed;
+
 
     public Branch() {
     }
